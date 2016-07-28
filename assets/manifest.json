@@ -1,0 +1,15 @@
+{
+  "short_name": "MVC Works",
+  "name": "MVC Works",
+  "icons": [
+    {
+      "src": "mvc-works-192x192.png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eeeeff",
+  "theme_color": "#eeeeff"
+}
