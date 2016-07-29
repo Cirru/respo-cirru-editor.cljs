@@ -67,7 +67,7 @@
 (deftask dev []
   (set-env!
     :asset-paths #{"assets"}
-    :source-paths #{"cirru/src"})
+    :source-paths #{"cirru/src" "cirru/app"})
   (comp
     (html-file :data {:build? false})
     (watch)
@@ -80,7 +80,7 @@
 (deftask build-simple []
   (set-env!
     :asset-paths #{"assets"}
-    :source-paths #{"cirru/src"})
+    :source-paths #{"cirru/src" "cirru/app"})
   (comp
     (transform-cirru)
     (cljs :optimizations :simple)
@@ -90,7 +90,7 @@
 (deftask build-advanced []
   (set-env!
     :asset-paths #{"assets"}
-    :source-paths #{"cirru/src"})
+    :source-paths #{"cirru/src" "cirru/app"})
   (comp
     (transform-cirru)
     (cljs :optimizations :advanced)

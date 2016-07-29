@@ -1,7 +1,7 @@
 
 (ns cirru-editor.core
   (:require [respo.core :refer [render! clear-cache!]]
-            [cirru-editor.component.container :refer [comp-container]]
+            [cirru-editor.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]))
 
 (defonce store-ref (atom {}))

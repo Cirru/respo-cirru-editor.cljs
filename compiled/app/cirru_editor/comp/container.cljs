@@ -1,5 +1,5 @@
 
-(ns cirru-editor.component.container
+(ns cirru-editor.comp.container
   (:require [hsl.core :refer [hsl]]
             [respo.alias :refer [create-comp div span]]))
 
