@@ -4,7 +4,7 @@
             [cirru-editor.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]))
 
-(defonce store-ref (atom {}))
+(defonce store-ref (atom ["demo" ["cute" ["cute"]] "demo"]))
 
 (defonce states-ref (atom {}))
 
