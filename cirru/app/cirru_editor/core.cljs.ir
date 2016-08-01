@@ -1,7 +1,7 @@
 
 [
 [ "ns" "cirru-editor.core" [ ":require" [ "[]" "respo.core" ":refer" [ "[]" "render!" "clear-cache!" ] ] [ "[]" "cirru-editor.comp.container" ":refer" [ "[]" "comp-container" ] ] [ "[]" "cljs.reader" ":refer" [ "[]" "read-string" ] ] ] ]
-[ "defonce" "store-ref" [ "atom" [ "[]" "|demo" [ "[]" "|cute" [ "[]" "|cute" ] ] "|demo" ] ] ]
+[ "defonce" "store-ref" [ "atom" [ "[]" [ "[]" "|demo" [ "[]" "|cute" [ "[]" "|cute" ] ] "|demo" ] [ "[]" "|a" ] ] ] ]
 [ "defonce" "states-ref" [ "atom" [ "{}" ] ] ]
 [ "defn" "dispatch!" [ "op" "op-data" ] ]
 [ "defn" "render-app!" [  ] [ "let" [ [ "target" [ ".querySelector" "js/document" "|#app" ] ] ] [ "render!" [ "comp-container" "@store-ref" ] "target" "dispatch!" "states-ref" ] ] ]

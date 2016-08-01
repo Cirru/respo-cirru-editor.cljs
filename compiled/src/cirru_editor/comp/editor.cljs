@@ -11,7 +11,7 @@
   (fn [state mutate!]
     (div
       {}
-      (comp-expression (:tree state))
+      (comp-expression (:tree state) mutate! [] 0 false)
       (comment comp-debug state nil))))
 
 (def comp-editor (create-comp :editor init-state update-state render))
