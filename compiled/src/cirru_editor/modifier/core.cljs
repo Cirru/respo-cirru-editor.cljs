@@ -5,7 +5,7 @@
 
 (defn default-handler [snapshot op-data] snapshot)
 
-(defn update-state [snapshot op op-data]
+(defn updater [snapshot op op-data]
   (println :update-state op op-data)
   (let [handler (case
                   op
@@ -13,5 +13,7 @@
                   tree/update-token
                   :after-token
                   tree/after-token
+                  :focus-to
+                  focus/focus-to
                   default-handler)]
     (handler snapshot op-data)))

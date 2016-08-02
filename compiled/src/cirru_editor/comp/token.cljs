@@ -32,6 +32,9 @@
                                                                   coord))
         :else nil))))
 
+(defn on-click [modify! coord]
+  (fn [e dispatch!] (modify! :focus-to coord)))
+
 (defn render [token modify! coord focus]
   (fn [state mutate!]
     (input
@@ -46,7 +49,11 @@
            {:background-color (hsl 0 0 100 0.3)})),
        :event
        {:keydown (on-keydown modify! coord),
+        :click (on-click modify! coord),
         :input (on-input modify! coord)},
-       :attrs {:value token}})))
+       :attrs
+       (merge
+         {:value token}
+         (if (= coord focus) {:id "editor-focused"}))})))
 
 (def comp-token (create-comp :token render))

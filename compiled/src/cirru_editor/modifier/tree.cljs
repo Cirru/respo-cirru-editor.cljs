@@ -19,4 +19,8 @@
              (concat
                (subvec expression 0 (inc (last coord)))
                [""]
-               (subvec expression (inc (last coord)))))))))))
+               (subvec expression (inc (last coord))))))))
+     (update
+       :focus
+       (fn [coord]
+         (conj (into [] (butlast coord)) (inc (last coord))))))))

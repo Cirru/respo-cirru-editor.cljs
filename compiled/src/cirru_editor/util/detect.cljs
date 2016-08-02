@@ -7,10 +7,10 @@
 (defn coord-contains? [a b]
   (if (nil? a)
     false
-    (if (pos? (count b))
-      (if (pos? (count a))
-        (if (= (first a) (first b)) (recur (rest a) (rest b)) false)
-        false)
-      true)))
+    (if (empty? b)
+      true
+      (if (empty? a)
+        false
+        (if (= (first a) (first b)) (recur (rest a) (rest b)) false)))))
 
 (defn has-blank? [x] (includes? x " "))

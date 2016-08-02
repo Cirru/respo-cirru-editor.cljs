@@ -1,4 +1,5 @@
 
 (ns cirru-editor.modifier.focus)
 
-(defn focus-at [snapshot op-data])
+(defn focus-to [snapshot op-data]
+  (let [coord op-data] (assoc snapshot :focus coord)))

@@ -17,6 +17,9 @@
 
 (declare comp-expression)
 
+(defn on-click [modify! coord]
+  (fn [e dispatch!] (modify! :focus-to coord)))
+
 (defn render [expression modify! coord level tail? focus]
   (fn [state mutate!]
     (let [tree (div
@@ -29,7 +32,11 @@
                        :display "inline-block"})
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100)})),
-                  :attrs {:tab-index 0}}
+                  :event {:click (on-click modify! coord)},
+                  :attrs
+                  (merge
+                    {:tab-index 0}
+                    (if (= coord focus) {:id "editor-focused"}))}
                  (let [exp-size (count expression)]
                    (->>
                      expression
@@ -56,10 +63,8 @@
                                              modify!
                                              child-coord
                                              (inc level)
-                                             (=
-                                               (dec exp-size)
-                                               idx
-                                               child-focus))))])))))]
+                                             (= (dec exp-size) idx)
+                                             child-focus)))])))))]
       (if (> level 0)
         (interpose-spaces tree {:width "8px", :display "inline-block"})
         tree))))
