@@ -22,7 +22,7 @@
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord))))
 
-(defn on-keydown [modify! coord]
+(defn on-keydown [modify! coord on-save!]
   (fn [e dispatch!]
     (let [code (:key-code e)
           event (:original-event e)
@@ -63,9 +63,12 @@
         (and command? (= code keycode/key-v)) (modify!
                                                 :command-paste
                                                 coord)
+        (and command? (= code keycode/key-s)) (do
+                                                (.preventDefault event)
+                                                (on-save! e dispatch!))
         :else nil))))
 
-(defn render [expression modify! coord level tail? focus]
+(defn render [expression modify! coord level tail? focus on-save!]
   (fn [state mutate!]
     (let [tree (div
                  {:style
@@ -78,7 +81,7 @@
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100)})),
                   :event
-                  {:keydown (on-keydown modify! coord),
+                  {:keydown (on-keydown modify! coord on-save!),
                    :click (on-click modify! coord focus)},
                   :attrs
                   (merge
@@ -104,14 +107,16 @@
                                              item
                                              modify!
                                              child-coord
-                                             child-focus)
+                                             child-focus
+                                             on-save!)
                                            (comp-expression
                                              item
                                              modify!
                                              child-coord
                                              (inc level)
                                              (= (dec exp-size) idx)
-                                             child-focus)))])))))]
+                                             child-focus
+                                             on-save!)))])))))]
       (if (> level 0)
         (interpose-spaces tree {:width "8px", :display "inline-block"})
         tree))))

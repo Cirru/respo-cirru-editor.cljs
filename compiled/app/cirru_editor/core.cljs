@@ -8,7 +8,9 @@
 
 (defonce states-ref (atom {}))
 
-(defn dispatch! [op op-data])
+(defn dispatch! [op op-data]
+  (println "dispatch:" op op-data)
+  (case op :save (reset! store-ref op-data) nil))
 
 (defn render-app! []
   (let [target (.querySelector js/document "#app")]

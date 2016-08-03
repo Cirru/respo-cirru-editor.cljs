@@ -46,5 +46,7 @@
                   command/cut
                   :command-paste
                   command/paste
+                  :tree-reset
+                  tree/tree-reset
                   default-handler)]
     (handler snapshot op-data)))

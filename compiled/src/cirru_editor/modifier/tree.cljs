@@ -149,3 +149,7 @@
              (if (zero? position)
                (butlast focus)
                (concat (butlast focus) [(dec position)])))))))))
+
+(defn tree-reset [snapshot op-data]
+  (let [tree op-data]
+    (-> snapshot (assoc :tree tree) (assoc :focus []))))

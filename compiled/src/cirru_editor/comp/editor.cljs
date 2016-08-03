@@ -3,11 +3,29 @@
   (:require [hsl.core :refer [hsl]]
             [respo.alias :refer [create-comp div]]
             [respo.comp.debug :refer [comp-debug]]
+            [respo.comp.space :refer [comp-space]]
+            [respo.comp.text :refer [comp-text]]
             [cirru-editor.modifier.core :refer [updater]]
             [cirru-editor.comp.expression :refer [comp-expression]]))
 
 (def style-editor
  {:background-color (hsl 200 10 40), :padding "8px 8px"})
+
+(def style-toolbar
+ {:align-items "center",
+  :min-height "24px",
+  :justify-content "flex-start",
+  :display "flex"})
+
+(def style-button
+ {:line-height "1.8",
+  :min-width "48px",
+  :color (hsl 0 0 100 0.8),
+  :text-align "center",
+  :font-size "12px",
+  :background-color (hsl 0 0 100 0.2),
+  :cursor "pointer",
+  :padding "0 8px"})
 
 (defn init-state [tree] {:tree tree, :clipboard [], :focus []})
 
@@ -19,11 +37,37 @@
         (if (not= editor-focus current-focus) (.focus editor-focus)))))
   (updater state op op-data))
 
-(defn render [snapshot]
+(defn handle-save [on-save! tree]
+  (fn [e dispatch!] (on-save! tree dispatch!)))
+
+(defn handle-discard [mutate! tree]
+  (fn [e dispatch!] (mutate! :tree-reset tree)))
+
+(defn render [tree on-save!]
   (fn [state mutate!]
     (div
       {:style style-editor}
-      (comp-expression (:tree state) mutate! [] 0 false (:focus state))
+      (div
+        {:style style-toolbar}
+        (if (not= tree (:tree state))
+          (div
+            {:style style-button,
+             :event {:click (handle-save on-save! (:tree state))}}
+            (comp-text "save" nil)))
+        (comp-space "8px" nil)
+        (if (not= tree (:tree state))
+          (div
+            {:style style-button,
+             :event {:click (handle-discard mutate! tree)}}
+            (comp-text "discard" nil))))
+      (comp-expression
+        (:tree state)
+        mutate!
+        []
+        0
+        false
+        (:focus state)
+        (handle-save on-save! (:tree state)))
       (comp-debug state nil))))
 
 (def comp-editor (create-comp :editor init-state update-state render))
