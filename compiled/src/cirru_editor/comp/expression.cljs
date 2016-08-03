@@ -13,7 +13,7 @@
 (def style-expression
  {:border-style "solid",
   :vertical-align "top",
-  :min-height "14px",
+  :min-height "18px",
   :margin-left "8px",
   :margin-top "2px",
   :border-width "0 0 0 1px",
@@ -99,7 +99,7 @@
                        :padding "0px 0px 2px 0",
                        :display "inline-block"})
                     (if (and tail? (not head?) (pos? level))
-                      {:margin-left "2px",
+                      {:margin-left "8px",
                        :border-width "0 0 0 1px",
                        :padding "0px 0px 0px 8px",
                        :display "inline-block"})
@@ -145,7 +145,9 @@
                                        child-coord
                                        (inc level)
                                        (and
-                                         (not tail?)
+                                         (or
+                                           after-expression?
+                                           (not tail?))
                                          (= (dec exp-size) idx))
                                        child-focus
                                        on-save!

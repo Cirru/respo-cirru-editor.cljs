@@ -9,7 +9,7 @@
 (def style-token
  {:line-height 1.4,
   :color (hsl 180 80 50 0.6),
-  :font-size "14px",
+  :font-size "15px",
   :background-color "transparent",
   :max-width "200px",
   :padding "0 2px",
@@ -73,7 +73,7 @@
          style-token
          {:width
           (str
-            (+ 8 (text-width token 14 (:font-family style-token)))
+            (+ 8 (text-width token 15 (:font-family style-token)))
             "px")}
          (if (or (has-blank? token) (zero? (count token)))
            {:background-color (hsl 0 0 100 0.3)})

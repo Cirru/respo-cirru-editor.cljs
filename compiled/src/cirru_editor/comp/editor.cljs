@@ -84,6 +84,6 @@
           (handle-save on-save! (:tree state))
           true
           false))
-      (comp-debug state {:bottom 0, :left 0}))))
+      (comment comp-debug state {:bottom 0, :left 0}))))
 
 (def comp-editor (create-comp :editor init-state update-state render))
