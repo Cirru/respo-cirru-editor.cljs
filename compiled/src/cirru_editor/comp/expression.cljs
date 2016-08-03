@@ -5,17 +5,22 @@
             [respo.comp.debug :refer [comp-debug]]
             [respo-border.transform.space :refer [interpose-spaces]]
             [cirru-editor.comp.token :refer [comp-token]]
-            [cirru-editor.util.detect :refer [coord-contains?]]
+            [cirru-editor.util.detect :refer [coord-contains?
+                                              shallow?
+                                              deep?]]
             [cirru-editor.util.keycode :as keycode]))
 
 (def style-expression
  {:border-style "solid",
+  :vertical-align "top",
   :min-height "14px",
+  :margin-left "8px",
+  :margin-top "2px",
   :border-width "0 0 0 1px",
-  :padding "0 0 0 8px",
+  :padding "0px 0 0px 8px",
   :outline "none",
-  :border-color (hsl 0 0 100 0.6),
-  :margin "4px 8px"})
+  :border-color (hsl 0 0 100 0.16),
+  :margin-bottom "2px"})
 
 (declare comp-expression)
 
@@ -68,18 +73,38 @@
                                                 (on-save! e dispatch!))
         :else nil))))
 
-(defn render [expression modify! coord level tail? focus on-save!]
+(defn render [expression
+              modify!
+              coord
+              level
+              tail?
+              focus
+              on-save!
+              head?
+              after-expression?]
   (fn [state mutate!]
-    (let [tree (div
+    (let [exp-size (count expression)
+          tree (div
                  {:style
                   (merge
                     style-expression
-                    (if (and tail? (> level 1))
-                      {:border-width "0 0 1px 0",
-                       :padding "4px 4px",
+                    (if (and
+                          (shallow? expression)
+                          (not after-expression?)
+                          (not tail?)
+                          (pos? level)
+                          (< (count expression) 5))
+                      {:margin-left "8px",
+                       :border-width "0 0 1px 0",
+                       :padding "0px 0px 2px 0",
+                       :display "inline-block"})
+                    (if (and tail? (not head?) (pos? level))
+                      {:margin-left "2px",
+                       :border-width "0 0 0 1px",
+                       :padding "0px 0px 0px 8px",
                        :display "inline-block"})
                     (if (= coord focus)
-                      {:border-color (hsl 0 0 100)})),
+                      {:border-color (hsl 0 0 100 0.4)})),
                   :event
                   {:keydown (on-keydown modify! coord on-save!),
                    :click (on-click modify! coord focus)},
@@ -87,38 +112,53 @@
                   (merge
                     {:tab-index 0}
                     (if (= coord focus) {:id "editor-focused"}))}
-                 (let [exp-size (count expression)]
-                   (->>
-                     expression
-                     (map-indexed
-                       (fn [idx item] [idx
-                                       (let 
-                                         [child-coord (conj coord idx)
-                                          child-focus
-                                          (if
-                                            (coord-contains?
-                                              focus
-                                              child-coord)
-                                            focus
-                                            nil)]
-                                         (if
-                                           (string? item)
-                                           (comp-token
-                                             item
-                                             modify!
-                                             child-coord
-                                             child-focus
-                                             on-save!)
-                                           (comp-expression
-                                             item
-                                             modify!
-                                             child-coord
-                                             (inc level)
-                                             (= (dec exp-size) idx)
-                                             child-focus
-                                             on-save!)))])))))]
-      (if (> level 0)
-        (interpose-spaces tree {:width "8px", :display "inline-block"})
+                 (loop [acc []
+                        idx 0
+                        expr expression
+                        child-after-expression? false]
+                   (if (empty? expr)
+                     acc
+                     (let [item (first expr)
+                           pair [idx
+                                 (let 
+                                   [child-coord (conj coord idx)
+                                    child-focus
+                                    (if
+                                      (coord-contains?
+                                        focus
+                                        child-coord)
+                                      focus
+                                      nil)
+                                    child-head? (zero? idx)]
+                                   (if
+                                     (string? item)
+                                     (comp-token
+                                       item
+                                       modify!
+                                       child-coord
+                                       child-focus
+                                       on-save!
+                                       child-head?)
+                                     (comp-expression
+                                       item
+                                       modify!
+                                       child-coord
+                                       (inc level)
+                                       (and
+                                         (not tail?)
+                                         (= (dec exp-size) idx))
+                                       child-focus
+                                       on-save!
+                                       child-head?
+                                       child-after-expression?)))]
+                           next-acc (conj acc pair)]
+                       (recur
+                         next-acc
+                         (inc idx)
+                         (rest expr)
+                         (vector? item))))))]
+      (if (>= level 0)
+        (interpose-spaces tree {:width "6px", :display "inline-block"})
         tree))))
 
 (def comp-expression (create-comp :expression render))

@@ -7,11 +7,12 @@
             [cirru-editor.util.keycode :as keycode]))
 
 (def style-token
- {:color (hsl 0 0 100 0.8),
+ {:line-height 1.4,
+  :color (hsl 180 80 50 0.6),
   :font-size "14px",
   :background-color "transparent",
   :max-width "200px",
-  :padding "0 4px",
+  :padding "0 2px",
   :outline "none",
   :border "none",
   :font-family "Menlo,monospace"})
@@ -64,7 +65,7 @@
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord))))
 
-(defn render [token modify! coord focus on-save!]
+(defn render [token modify! coord focus on-save! head?]
   (fn [state mutate!]
     (input
       {:style
@@ -72,11 +73,11 @@
          style-token
          {:width
           (str
-            (+ 12 (text-width token 14 (:font-family style-token)))
+            (+ 8 (text-width token 14 (:font-family style-token)))
             "px")}
          (if (or (has-blank? token) (zero? (count token)))
            {:background-color (hsl 0 0 100 0.3)})
-         (if (= coord focus) {:color (hsl 0 0 100)})),
+         (if head? {:color (hsl 30 80 60 0.9)})),
        :event
        {:keydown (on-keydown modify! coord token on-save!),
         :click (on-click modify! coord focus),

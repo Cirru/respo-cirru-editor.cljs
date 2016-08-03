@@ -7,6 +7,14 @@
 (defn on-save! [tree dispatch!] (dispatch! :save tree))
 
 (defn render [store]
-  (fn [state mutate!] (div {} (comp-editor store on-save!))))
+  (fn [state mutate!]
+    (div
+      {:style
+       {:width "100%",
+        :display "flex",
+        :position "absolute",
+        :flex-direciton "column",
+        :height "100%"}}
+      (comp-editor store on-save!))))
 
 (def comp-container (create-comp :container render))

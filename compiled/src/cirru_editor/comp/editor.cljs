@@ -9,13 +9,22 @@
             [cirru-editor.comp.expression :refer [comp-expression]]))
 
 (def style-editor
- {:background-color (hsl 200 10 40), :padding "8px 8px"})
+ {:min-height "200px",
+  :background-color (hsl 200 90 3),
+  :flex 1,
+  :padding "8px 8px 8px 8px",
+  :display "flex",
+  :position "relative",
+  :flex-direction "column"})
 
 (def style-toolbar
  {:align-items "center",
   :min-height "24px",
+  :top "8px",
   :justify-content "flex-start",
-  :display "flex"})
+  :right "8px",
+  :display "flex",
+  :position "absolute"})
 
 (def style-button
  {:line-height "1.8",
@@ -26,6 +35,9 @@
   :background-color (hsl 0 0 100 0.2),
   :cursor "pointer",
   :padding "0 8px"})
+
+(def style-box
+ {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})
 
 (defn init-state [tree] {:tree tree, :clipboard [], :focus []})
 
@@ -60,14 +72,18 @@
             {:style style-button,
              :event {:click (handle-discard mutate! tree)}}
             (comp-text "discard" nil))))
-      (comp-expression
-        (:tree state)
-        mutate!
-        []
-        0
-        false
-        (:focus state)
-        (handle-save on-save! (:tree state)))
-      (comp-debug state nil))))
+      (div
+        {:style style-box}
+        (comp-expression
+          (:tree state)
+          mutate!
+          []
+          0
+          false
+          (:focus state)
+          (handle-save on-save! (:tree state))
+          true
+          false))
+      (comp-debug state {:bottom 0, :left 0}))))
 
 (def comp-editor (create-comp :editor init-state update-state render))
