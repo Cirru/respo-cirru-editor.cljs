@@ -23,7 +23,10 @@
   (fn [e dispatch!]
     (let [code (:key-code e)
           event (:original-event e)
-          shift? (.-shiftKey event)]
+          shift? (.-shiftKey event)
+          target (.-target event)
+          at-start? (zero? (.-selectionStart target))
+          at-end? (= (count token) (.-selectionEnd target))]
       (cond
         (and (= code keycode/space) (not shift?)) (do
                                                     (.preventDefault
@@ -45,6 +48,13 @@
                                      (do
                                        (modify! :remove-node coord)
                                        (.preventDefault event)))
+        (= code keycode/up) (modify! :node-up coord)
+        (and at-start? (= code keycode/left)) (modify!
+                                                :node-left
+                                                coord)
+        (and at-end? (= code keycode/right)) (modify!
+                                               :node-right
+                                               coord)
         :else nil))))
 
 (defn on-click [modify! coord focus]

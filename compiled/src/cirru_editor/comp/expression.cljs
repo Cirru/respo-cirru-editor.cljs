@@ -46,6 +46,10 @@
                                    (modify! :before-expression coord)
                                    (modify! :after-expression coord)))
         (= code keycode/backspace) (modify! :remove-node coord)
+        (= code keycode/left) (modify! :node-left coord)
+        (= code keycode/right) (modify! :node-right coord)
+        (= code keycode/up) (modify! :node-up coord)
+        (= code keycode/down) (modify! :expression-down coord)
         :else nil))))
 
 (defn render [expression modify! coord level tail? focus]

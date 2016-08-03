@@ -31,5 +31,13 @@
                   tree/remove-node
                   :focus-to
                   focus/focus-to
+                  :node-up
+                  focus/node-up
+                  :expression-down
+                  focus/expression-down
+                  :node-left
+                  focus/node-left
+                  :node-right
+                  focus/node-right
                   default-handler)]
     (handler snapshot op-data)))
