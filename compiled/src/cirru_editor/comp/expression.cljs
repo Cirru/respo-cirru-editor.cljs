@@ -10,6 +10,7 @@
 
 (def style-expression
  {:border-style "solid",
+  :min-height "14px",
   :border-width "0 0 0 1px",
   :padding "0 0 0 8px",
   :outline "none",
@@ -44,6 +45,7 @@
                                    shift?
                                    (modify! :before-expression coord)
                                    (modify! :after-expression coord)))
+        (= code keycode/backspace) (modify! :remove-node coord)
         :else nil))))
 
 (defn render [expression modify! coord level tail? focus]

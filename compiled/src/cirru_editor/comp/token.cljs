@@ -19,7 +19,7 @@
 (defn on-input [modify! coord]
   (fn [e dispatch!] (modify! :update-token [coord (:value e)])))
 
-(defn on-keydown [modify! coord]
+(defn on-keydown [modify! coord token]
   (fn [e dispatch!]
     (let [code (:key-code e)
           event (:original-event e)
@@ -27,8 +27,7 @@
       (cond
         (and (= code keycode/space) (not shift?)) (do
                                                     (.preventDefault
-                                                      (:original-event
-                                                        e))
+                                                      event)
                                                     (modify!
                                                       :after-token
                                                       coord))
@@ -41,6 +40,11 @@
                                  shift?
                                  (modify! :before-token coord)
                                  (modify! :after-token coord))
+        (= code keycode/backspace) (if
+                                     (= token "")
+                                     (do
+                                       (modify! :remove-node coord)
+                                       (.preventDefault event)))
         :else nil))))
 
 (defn on-click [modify! coord focus]
@@ -60,7 +64,7 @@
            {:background-color (hsl 0 0 100 0.3)})
          (if (= coord focus) {:color (hsl 0 0 100)})),
        :event
-       {:keydown (on-keydown modify! coord),
+       {:keydown (on-keydown modify! coord token),
         :click (on-click modify! coord focus),
         :input (on-input modify! coord)},
        :attrs

@@ -27,8 +27,8 @@
                   tree/append-expression
                   :before-token
                   tree/before-token
-                  :alter-token
-                  tree/after-token
+                  :remove-node
+                  tree/remove-node
                   :focus-to
                   focus/focus-to
                   default-handler)]
