@@ -7,7 +7,7 @@
             [cirru-editor.util.keycode :as keycode]))
 
 (def style-token
- {:color (hsl 0 0 100),
+ {:color (hsl 0 0 100 0.8),
   :font-size "14px",
   :background-color "transparent",
   :max-width "200px",
@@ -21,15 +21,22 @@
 
 (defn on-keydown [modify! coord]
   (fn [e dispatch!]
-    (let [code (:key-code e) event (:original-event e)]
+    (let [code (:key-code e)
+          event (:original-event e)
+          shift? (.-shiftKey event)]
       (cond
-        (and (= code keycode/space) (not (.-shiftKey event))) (do
-                                                                (.preventDefault
-                                                                  (:original-event
-                                                                    e))
-                                                                (modify!
-                                                                  :after-token
-                                                                  coord))
+        (and (= code keycode/space) (not shift?)) (do
+                                                    (.preventDefault
+                                                      (:original-event
+                                                        e))
+                                                    (modify!
+                                                      :after-token
+                                                      coord))
+        (= code keycode/tab) (do
+                               (.preventDefault event)
+                               (if
+                                 (not shift?)
+                                 (modify! :fold-node coord)))
         :else nil))))
 
 (defn on-click [modify! coord focus]
@@ -46,7 +53,8 @@
             (+ 12 (text-width token 14 (:font-family style-token)))
             "px")}
          (if (or (has-blank? token) (zero? (count token)))
-           {:background-color (hsl 0 0 100 0.3)})),
+           {:background-color (hsl 0 0 100 0.3)})
+         (if (= coord focus) {:color (hsl 0 0 100)})),
        :event
        {:keydown (on-keydown modify! coord),
         :click (on-click modify! coord focus),

@@ -5,20 +5,35 @@
             [respo.comp.debug :refer [comp-debug]]
             [respo-border.transform.space :refer [interpose-spaces]]
             [cirru-editor.comp.token :refer [comp-token]]
-            [cirru-editor.util.detect :refer [coord-contains?]]))
+            [cirru-editor.util.detect :refer [coord-contains?]]
+            [cirru-editor.util.keycode :as keycode]))
 
 (def style-expression
  {:border-style "solid",
   :border-width "0 0 0 1px",
-  :padding "0px 8px",
+  :padding "0 0 0 8px",
   :outline "none",
   :border-color (hsl 0 0 100 0.6),
-  :margin "4px 0"})
+  :margin "4px 8px"})
 
 (declare comp-expression)
 
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord))))
+
+(defn on-keydown [modify! coord]
+  (fn [e dispatch!]
+    (let [code (:key-code e)
+          event (:original-event e)
+          shift? (.-shiftKey event)]
+      (cond
+        (= code keycode/tab) (do
+                               (.preventDefault event)
+                               (if
+                                 shift?
+                                 (modify! :unfold-expression coord)
+                                 (modify! :fold-node coord)))
+        :else nil))))
 
 (defn render [expression modify! coord level tail? focus]
   (fn [state mutate!]
@@ -32,7 +47,9 @@
                        :display "inline-block"})
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100)})),
-                  :event {:click (on-click modify! coord focus)},
+                  :event
+                  {:keydown (on-keydown modify! coord),
+                   :click (on-click modify! coord focus)},
                   :attrs
                   (merge
                     {:tab-index 0}

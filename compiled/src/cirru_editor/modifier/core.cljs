@@ -13,6 +13,10 @@
                   tree/update-token
                   :after-token
                   tree/after-token
+                  :fold-node
+                  tree/fold-node
+                  :unfold-expression
+                  tree/unfold-expression
                   :focus-to
                   focus/focus-to
                   default-handler)]

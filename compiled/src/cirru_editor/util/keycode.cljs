@@ -14,3 +14,5 @@
 (def right 39)
 
 (def down 40)
+
+(def tab 9)
