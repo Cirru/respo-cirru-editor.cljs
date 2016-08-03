@@ -17,8 +17,8 @@
 
 (declare comp-expression)
 
-(defn on-click [modify! coord]
-  (fn [e dispatch!] (modify! :focus-to coord)))
+(defn on-click [modify! coord focus]
+  (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord))))
 
 (defn render [expression modify! coord level tail? focus]
   (fn [state mutate!]
@@ -32,7 +32,7 @@
                        :display "inline-block"})
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100)})),
-                  :event {:click (on-click modify! coord)},
+                  :event {:click (on-click modify! coord focus)},
                   :attrs
                   (merge
                     {:tab-index 0}
