@@ -25,7 +25,8 @@
   (fn [e dispatch!]
     (let [code (:key-code e)
           event (:original-event e)
-          shift? (.-shiftKey event)]
+          shift? (.-shiftKey event)
+          command? (or (.-metaKey event) (.-ctrlKey event))]
       (cond
         (= code keycode/tab) (do
                                (.preventDefault event)
@@ -33,6 +34,16 @@
                                  shift?
                                  (modify! :unfold-expression coord)
                                  (modify! :fold-node coord)))
+        (= code keycode/enter) (if
+                                 command?
+                                 (if
+                                   shift?
+                                   (modify! :prepend-expression coord)
+                                   (modify! :append-expression coord))
+                                 (if
+                                   shift?
+                                   (modify! :before-expression coord)
+                                   (modify! :after-expression coord)))
         :else nil))))
 
 (defn render [expression modify! coord level tail? focus]

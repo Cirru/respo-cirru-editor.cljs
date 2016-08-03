@@ -56,3 +56,70 @@
                              expression
                              (subvec parent (inc position)))))))))))
       snapshot)))
+
+(defn before-token [snapshot op-data]
+  (let [coord op-data]
+    (-> snapshot
+     (update-in
+       (cons :tree (butlast coord))
+       (fn [parent]
+         (into
+           []
+           (let [position (last coord)]
+             (cond
+               (zero? position) (cons "" parent)
+               :else (concat
+                       (subvec parent 0 position)
+                       [""]
+                       (subvec parent position))))))))))
+
+(defn before-expression [snapshot op-data]
+  (let [coord op-data]
+    (-> snapshot
+     (update-in
+       (cons :tree (butlast coord))
+       (fn [parent]
+         (let [position (last coord)]
+           (into
+             []
+             (cond
+               (zero? position) (cons [""] parent)
+               :else (concat
+                       (subvec parent 0 position)
+                       [[""]]
+                       (subvec parent position)))))))
+     (update :focus (fn [focus] (conj focus 0))))))
+
+(defn after-expression [snapshot op-data]
+  (let [coord op-data]
+    (-> snapshot
+     (update-in
+       (cons :tree (butlast coord))
+       (fn [parent]
+         (let [position (last coord)]
+           (into
+             []
+             (cond
+               (= position (dec (count parent))) (conj parent [""])
+               :else (concat
+                       (subvec parent 0 (inc position))
+                       [[""]]
+                       (subvec parent (inc position))))))))
+     (update
+       :focus
+       (fn [focus]
+         (conj (into [] (butlast focus)) (inc (last focus)) 0))))))
+
+(defn prepend-expression [snapshot op-data]
+  (let [coord op-data]
+    (-> snapshot
+     (update-in
+       (cons :tree coord)
+       (fn [parent] (into [] (cons "" parent))))
+     (update :focus (fn [focus] (conj focus 0))))))
+
+(defn append-expression [snapshot op-data]
+  (let [coord op-data expression (get-in snapshot (cons :tree coord))]
+    (-> snapshot
+     (update-in (cons :tree coord) (fn [parent] (conj parent "")))
+     (update :focus (fn [focus] (conj focus (count expression)))))))

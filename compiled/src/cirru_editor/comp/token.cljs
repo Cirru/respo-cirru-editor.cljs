@@ -37,6 +37,10 @@
                                (if
                                  (not shift?)
                                  (modify! :fold-node coord)))
+        (= code keycode/enter) (if
+                                 shift?
+                                 (modify! :before-token coord)
+                                 (modify! :after-token coord))
         :else nil))))
 
 (defn on-click [modify! coord focus]

@@ -17,6 +17,18 @@
                   tree/fold-node
                   :unfold-expression
                   tree/unfold-expression
+                  :before-expression
+                  tree/before-expression
+                  :after-expression
+                  tree/after-expression
+                  :prepend-expression
+                  tree/prepend-expression
+                  :append-expression
+                  tree/append-expression
+                  :before-token
+                  tree/before-token
+                  :alter-token
+                  tree/after-token
                   :focus-to
                   focus/focus-to
                   default-handler)]
