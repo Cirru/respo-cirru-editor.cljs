@@ -29,6 +29,10 @@
           shift? (.-shiftKey event)
           command? (or (.-metaKey event) (.-ctrlKey event))]
       (cond
+        (= code keycode/space) (if
+                                 shift?
+                                 (modify! :before-token coord)
+                                 (modify! :after-token coord))
         (= code keycode/tab) (do
                                (.preventDefault event)
                                (if
@@ -50,6 +54,15 @@
         (= code keycode/right) (modify! :node-right coord)
         (= code keycode/up) (modify! :node-up coord)
         (= code keycode/down) (modify! :expression-down coord)
+        (and command? (= code keycode/key-c)) (modify!
+                                                :command-copy
+                                                coord)
+        (and command? (= code keycode/key-x)) (modify!
+                                                :command-cut
+                                                coord)
+        (and command? (= code keycode/key-v)) (modify!
+                                                :command-paste
+                                                coord)
         :else nil))))
 
 (defn render [expression modify! coord level tail? focus]

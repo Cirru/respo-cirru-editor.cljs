@@ -9,7 +9,7 @@
 (def style-editor
  {:background-color (hsl 200 10 40), :padding "8px 8px"})
 
-(defn init-state [tree] {:tree tree, :focus []})
+(defn init-state [tree] {:tree tree, :clipboard [], :focus []})
 
 (defn update-state [state op op-data]
   (js/requestAnimationFrame

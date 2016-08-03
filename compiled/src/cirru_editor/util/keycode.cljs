@@ -16,3 +16,11 @@
 (def down 40)
 
 (def tab 9)
+
+(def key-c 67)
+
+(def key-s 83)
+
+(def key-x 88)
+
+(def key-v 86)

@@ -1,7 +1,8 @@
 
 (ns cirru-editor.modifier.core
   (:require [cirru-editor.modifier.tree :as tree]
-            [cirru-editor.modifier.focus :as focus]))
+            [cirru-editor.modifier.focus :as focus]
+            [cirru-editor.modifier.command :as command]))
 
 (defn default-handler [snapshot op-data] snapshot)
 
@@ -39,5 +40,11 @@
                   focus/node-left
                   :node-right
                   focus/node-right
+                  :command-copy
+                  command/copy
+                  :command-cut
+                  command/cut
+                  :command-paste
+                  command/paste
                   default-handler)]
     (handler snapshot op-data)))
