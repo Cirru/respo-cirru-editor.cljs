@@ -17,73 +17,40 @@
   :position "relative",
   :flex-direction "column"})
 
-(def style-toolbar
- {:align-items "center",
-  :min-height "24px",
-  :top "8px",
-  :justify-content "flex-start",
-  :right "8px",
-  :display "flex",
-  :position "absolute"})
-
-(def style-button
- {:line-height "1.8",
-  :min-width "48px",
-  :color (hsl 0 0 100 0.8),
-  :text-align "center",
-  :font-size "12px",
-  :background-color (hsl 0 0 100 0.2),
-  :cursor "pointer",
-  :padding "0 8px"})
-
 (def style-box
  {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})
 
-(defn init-state [tree] {:tree tree, :clipboard [], :focus []})
+(defn handle-save [on-save! snapshot]
+  (fn [e dispatch!] (on-save! snapshot dispatch!)))
 
-(defn update-state [state op op-data]
-  (js/requestAnimationFrame
-    (fn [timestamp]
-      (let [editor-focus (.querySelector js/document "#editor-focused")
-            current-focus (.-activeElement js/document)]
-        (if (not= editor-focus current-focus) (.focus editor-focus)))))
-  (updater state op op-data))
+(defn handle-update [snapshot on-update!]
+  (fn [op op-data dispatch!]
+    (on-update! (updater snapshot op op-data) dispatch!)
+    (js/requestAnimationFrame
+      (fn [timestamp]
+        (let [editor-focus (.querySelector
+                             js/document
+                             "#editor-focused")
+              current-focus (.-activeElement js/document)]
+          (if (not= editor-focus current-focus)
+            (.focus editor-focus)))))))
 
-(defn handle-save [on-save! tree]
-  (fn [e dispatch!] (on-save! tree dispatch!)))
-
-(defn handle-discard [mutate! tree]
-  (fn [e dispatch!] (mutate! :tree-reset tree)))
-
-(defn render [tree on-save!]
+(defn render [snapshot on-update! on-save!]
   (fn [state mutate!]
     (div
       {:style style-editor}
       (div
-        {:style style-toolbar}
-        (if (not= tree (:tree state))
-          (div
-            {:style style-button,
-             :event {:click (handle-save on-save! (:tree state))}}
-            (comp-text "save" nil)))
-        (comp-space "8px" nil)
-        (if (not= tree (:tree state))
-          (div
-            {:style style-button,
-             :event {:click (handle-discard mutate! tree)}}
-            (comp-text "discard" nil))))
-      (div
         {:style style-box}
         (comp-expression
-          (:tree state)
-          mutate!
+          (:tree snapshot)
+          (handle-update snapshot on-update!)
           []
           0
           false
-          (:focus state)
-          (handle-save on-save! (:tree state))
+          (:focus snapshot)
+          (handle-save on-save! snapshot)
           true
           false))
-      (comment comp-debug state {:bottom 0, :left 0}))))
+      (comment comp-debug snapshot {:bottom 0, :left 0}))))
 
-(def comp-editor (create-comp :editor init-state update-state render))
+(def comp-editor (create-comp :editor render))

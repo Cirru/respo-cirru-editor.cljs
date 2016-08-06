@@ -10,8 +10,8 @@ Demo http://repo.cirru.org/respo-cirru-editor/
 
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
 
-```
-[cirru/editor "0.1.0"]
+```clojure
+[cirru/editor "0.1.1"]
 ```
 
 Import `comp-editor` like this:
@@ -23,13 +23,18 @@ Import `comp-editor` like this:
 Arguments of `comp-editor`:
 
 ```clojure
+(defn on-update! [tree dispatch!] (dispatch! :update tree))
+
 (defn on-save! [tree dispatch!] (dispatch! :save tree))
 
-(defn render [store]
+(defn schema {:snaphot {:tree []
+                        :focus []
+                        :clipboard []}})
+
+(defn render [snapshot]
   (fn [state mutate!]
-    (div
-      {:style {}}
-      (comp-editor store on-save!))))
+    (div {:style {}}
+      (comp-editor snapshot on-update! on-save!))))
 ```
 
 ### Develop

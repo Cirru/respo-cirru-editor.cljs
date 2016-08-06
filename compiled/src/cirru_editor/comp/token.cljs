@@ -18,7 +18,8 @@
   :font-family "Menlo,monospace"})
 
 (defn on-input [modify! coord]
-  (fn [e dispatch!] (modify! :update-token [coord (:value e)])))
+  (fn [e dispatch!]
+    (modify! :update-token [coord (:value e)] dispatch!)))
 
 (defn on-keydown [modify! coord token on-save!]
   (fn [e dispatch!]
@@ -35,35 +36,48 @@
                                                       event)
                                                     (modify!
                                                       :after-token
-                                                      coord))
+                                                      coord
+                                                      dispatch!))
         (= code keycode/tab) (do
                                (.preventDefault event)
                                (if
                                  (not shift?)
-                                 (modify! :fold-node coord)))
+                                 (modify! :fold-node coord dispatch!)))
         (= code keycode/enter) (if
                                  shift?
-                                 (modify! :before-token coord)
-                                 (modify! :after-token coord))
+                                 (modify!
+                                   :before-token
+                                   coord
+                                   dispatch!)
+                                 (modify!
+                                   :after-token
+                                   coord
+                                   dispatch!))
         (= code keycode/backspace) (if
                                      (= token "")
                                      (do
-                                       (modify! :remove-node coord)
+                                       (modify!
+                                         :remove-node
+                                         coord
+                                         dispatch!)
                                        (.preventDefault event)))
-        (= code keycode/up) (modify! :node-up coord)
+        (= code keycode/up) (modify! :node-up coord dispatch!)
         (and at-start? (= code keycode/left)) (modify!
                                                 :node-left
-                                                coord)
+                                                coord
+                                                dispatch!)
         (and at-end? (= code keycode/right)) (modify!
                                                :node-right
-                                               coord)
+                                               coord
+                                               dispatch!)
         (and command? (= code keycode/key-s)) (do
                                                 (.preventDefault event)
                                                 (on-save! e dispatch!))
         :else nil))))
 
 (defn on-click [modify! coord focus]
-  (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord))))
+  (fn [e dispatch!]
+    (if (not= coord focus) (modify! :focus-to coord dispatch!))))
 
 (defn render [token modify! coord focus on-save! head?]
   (fn [state mutate!]

@@ -25,7 +25,8 @@
 (declare comp-expression)
 
 (defn on-click [modify! coord focus]
-  (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord))))
+  (fn [e dispatch!]
+    (if (not= coord focus) (modify! :focus-to coord dispatch!))))
 
 (defn on-keydown [modify! coord on-save!]
   (fn [e dispatch!]
@@ -36,38 +37,72 @@
       (cond
         (= code keycode/space) (if
                                  shift?
-                                 (modify! :before-token coord)
-                                 (modify! :after-token coord))
+                                 (modify!
+                                   :before-token
+                                   coord
+                                   dispatch!)
+                                 (modify!
+                                   :after-token
+                                   coord
+                                   dispatch!))
         (= code keycode/tab) (do
                                (.preventDefault event)
                                (if
                                  shift?
-                                 (modify! :unfold-expression coord)
-                                 (modify! :fold-node coord)))
+                                 (modify!
+                                   :unfold-expression
+                                   coord
+                                   dispatch!)
+                                 (modify!
+                                   :fold-node
+                                   coord
+                                   dispatch!
+                                   dispatch!)))
         (= code keycode/enter) (if
                                  command?
                                  (if
                                    shift?
-                                   (modify! :prepend-expression coord)
-                                   (modify! :append-expression coord))
+                                   (modify!
+                                     :prepend-expression
+                                     coord
+                                     dispatch!)
+                                   (modify!
+                                     :append-expression
+                                     coord
+                                     dispatch!))
                                  (if
                                    shift?
-                                   (modify! :before-expression coord)
-                                   (modify! :after-expression coord)))
-        (= code keycode/backspace) (modify! :remove-node coord)
-        (= code keycode/left) (modify! :node-left coord)
-        (= code keycode/right) (modify! :node-right coord)
-        (= code keycode/up) (modify! :node-up coord)
-        (= code keycode/down) (modify! :expression-down coord)
+                                   (modify!
+                                     :before-expression
+                                     coord
+                                     dispatch!)
+                                   (modify!
+                                     :after-expression
+                                     coord
+                                     dispatch!)))
+        (= code keycode/backspace) (modify!
+                                     :remove-node
+                                     coord
+                                     dispatch!)
+        (= code keycode/left) (modify! :node-left coord dispatch!)
+        (= code keycode/right) (modify! :node-right coord dispatch!)
+        (= code keycode/up) (modify! :node-up coord dispatch!)
+        (= code keycode/down) (modify!
+                                :expression-down
+                                coord
+                                dispatch!)
         (and command? (= code keycode/key-c)) (modify!
                                                 :command-copy
-                                                coord)
+                                                coord
+                                                dispatch!)
         (and command? (= code keycode/key-x)) (modify!
                                                 :command-cut
-                                                coord)
+                                                coord
+                                                dispatch!)
         (and command? (= code keycode/key-v)) (modify!
                                                 :command-paste
-                                                coord)
+                                                coord
+                                                dispatch!)
         (and command? (= code keycode/key-s)) (do
                                                 (.preventDefault event)
                                                 (on-save! e dispatch!))
