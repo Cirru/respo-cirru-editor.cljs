@@ -11,11 +11,12 @@
 (def style-editor
  {:min-height "200px",
   :background-color (hsl 200 90 3),
-  :flex 1,
+  :width "100%",
   :padding "8px 8px 8px 8px",
   :display "flex",
   :position "relative",
-  :flex-direction "column"})
+  :flex-direction "column",
+  :height "100%"})
 
 (def style-box
  {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})

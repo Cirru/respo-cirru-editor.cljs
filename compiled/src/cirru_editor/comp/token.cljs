@@ -9,6 +9,7 @@
 (def style-token
  {:line-height 1.4,
   :color (hsl 180 80 50 0.6),
+  :text-align "center",
   :font-size "15px",
   :background-color "transparent",
   :max-width "200px",
