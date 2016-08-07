@@ -18,7 +18,7 @@
          '[adzerk.boot-test   :refer :all]
          '[clojure.java.io    :as    io])
 
-(def +version+ "0.1.1")
+(def +version+ "0.1.2")
 
 (task-options!
   pom {:project     'cirru/editor
