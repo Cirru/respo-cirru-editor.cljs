@@ -2,7 +2,7 @@
 [
 [ "ns" "cirru-editor.comp.container" [ ":require" [ "[]" "hsl.core" ":refer" [ "[]" "hsl" ] ] [ "[]" "respo.alias" ":refer" [ "[]" "create-comp" "div" "span" ] ] [ "[]" "cirru-editor.comp.editor" ":refer" [ "[]" "comp-editor" ] ] ] ]
 [ "defn" "on-update!" [ "snapshot" "dispatch!" ] [ "dispatch!" ":save" "snapshot" ] ]
-[ "defn" "on-save!" [ "snapshot" "dispatch!" ] [ "println" "|on-save" ] ]
-[ "defn" "render" [ "store" ] [ "fn" [ "state" "mutate!" ] [ "div" [ "{}" [ ":style" [ "{}" [ ":position" "|absolute" ] [ ":width" "|100%" ] [ ":height" "|100%" ] [ ":display" "|flex" ] [ ":flex-direciton" "|column" ] ] ] ] [ "comp-editor" "store" "on-update!" "on-save!" ] ] ] ]
+[ "defn" "on-command" [ "snapshot" "dispatch!" "e" ] [ "println" "|command" "e" ] ]
+[ "defn" "render" [ "store" ] [ "fn" [ "state" "mutate!" ] [ "div" [ "{}" [ ":style" [ "{}" [ ":position" "|absolute" ] [ ":width" "|100%" ] [ ":height" "|100%" ] [ ":display" "|flex" ] [ ":flex-direciton" "|column" ] ] ] ] [ "comp-editor" "store" "on-update!" "on-command" ] ] ] ]
 [ "def" "comp-container" [ "create-comp" ":container" "render" ] ]
 ]

@@ -29,7 +29,7 @@
   (fn [e dispatch!]
     (if (not= coord focus) (modify! :focus-to coord dispatch!))))
 
-(defn on-keydown [modify! coord on-save!]
+(defn on-keydown [modify! coord on-command]
   (fn [e dispatch!]
     (let [code (:key-code e)
           event (:original-event e)
@@ -104,10 +104,9 @@
                                                 :command-paste
                                                 coord
                                                 dispatch!)
-        (and command? (= code keycode/key-s)) (do
-                                                (.preventDefault event)
-                                                (on-save! e dispatch!))
-        :else nil))))
+        :else (if command?
+                (do (.preventDefault event) (on-command e dispatch!))
+                nil)))))
 
 (defn render [expression
               modify!
@@ -115,7 +114,7 @@
               level
               tail?
               focus
-              on-save!
+              on-command
               head?
               after-expression?]
   (fn [state mutate!]
@@ -143,7 +142,7 @@
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100 0.5)})),
                   :event
-                  {:keydown (on-keydown modify! coord on-save!),
+                  {:keydown (on-keydown modify! coord on-command),
                    :click (on-click modify! coord focus)},
                   :attrs
                   (merge
@@ -174,7 +173,7 @@
                                        modify!
                                        child-coord
                                        child-focus
-                                       on-save!
+                                       on-command
                                        child-head?)
                                      (comp-expression
                                        item
@@ -187,7 +186,7 @@
                                            (not tail?))
                                          (= (dec exp-size) idx))
                                        child-focus
-                                       on-save!
+                                       on-command
                                        child-head?
                                        child-after-expression?)))]
                            next-acc (conj acc pair)]

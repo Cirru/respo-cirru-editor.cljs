@@ -21,8 +21,8 @@
 (def style-box
  {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})
 
-(defn handle-save [on-save! snapshot]
-  (fn [e dispatch!] (on-save! snapshot dispatch!)))
+(defn handle-command [on-command snapshot]
+  (fn [e dispatch!] (on-command snapshot dispatch! e)))
 
 (defn handle-update [snapshot on-update!]
   (fn [op op-data dispatch!]
@@ -36,7 +36,7 @@
           (if (not= editor-focus current-focus)
             (.focus editor-focus)))))))
 
-(defn render [snapshot on-update! on-save!]
+(defn render [snapshot on-update! on-command]
   (fn [state mutate!]
     (div
       {:style style-editor}
@@ -49,7 +49,7 @@
           0
           false
           (:focus snapshot)
-          (handle-save on-save! snapshot)
+          (handle-command on-command snapshot)
           true
           false))
       (comment comp-debug snapshot {:bottom 0, :left 0}))))

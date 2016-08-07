@@ -6,7 +6,7 @@
 
 (defn on-update! [snapshot dispatch!] (dispatch! :save snapshot))
 
-(defn on-save! [snapshot dispatch!] (println "on-save"))
+(defn on-command [snapshot dispatch! e] (println "command" e))
 
 (defn render [store]
   (fn [state mutate!]
@@ -17,6 +17,6 @@
         :position "absolute",
         :flex-direciton "column",
         :height "100%"}}
-      (comp-editor store on-update! on-save!))))
+      (comp-editor store on-update! on-command))))
 
 (def comp-container (create-comp :container render))

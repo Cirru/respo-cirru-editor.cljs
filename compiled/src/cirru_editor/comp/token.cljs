@@ -22,7 +22,7 @@
   (fn [e dispatch!]
     (modify! :update-token [coord (:value e)] dispatch!)))
 
-(defn on-keydown [modify! coord token on-save!]
+(defn on-keydown [modify! coord token on-command]
   (fn [e dispatch!]
     (let [code (:key-code e)
           event (:original-event e)
@@ -71,16 +71,15 @@
                                                :node-right
                                                coord
                                                dispatch!)
-        (and command? (= code keycode/key-s)) (do
-                                                (.preventDefault event)
-                                                (on-save! e dispatch!))
-        :else nil))))
+        :else (if command?
+                (do (.preventDefault event) (on-command e dispatch!))
+                nil)))))
 
 (defn on-click [modify! coord focus]
   (fn [e dispatch!]
     (if (not= coord focus) (modify! :focus-to coord dispatch!))))
 
-(defn render [token modify! coord focus on-save! head?]
+(defn render [token modify! coord focus on-command head?]
   (fn [state mutate!]
     (input
       {:style
@@ -94,7 +93,7 @@
            {:background-color (hsl 0 0 100 0.3)})
          (if head? {:color (hsl 30 80 60 0.9)})),
        :event
-       {:keydown (on-keydown modify! coord token on-save!),
+       {:keydown (on-keydown modify! coord token on-command),
         :click (on-click modify! coord focus),
         :input (on-input modify! coord)},
        :attrs
