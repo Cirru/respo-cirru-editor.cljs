@@ -7,7 +7,7 @@
 (defn default-handler [snapshot op-data] snapshot)
 
 (defn updater [snapshot op op-data]
-  (println :update-state op op-data)
+  (comment println :update-state op op-data)
   (let [handler (case
                   op
                   :update-token

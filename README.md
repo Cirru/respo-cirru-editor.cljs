@@ -18,12 +18,15 @@ Import `comp-editor` like this:
 
 ```clojure
 [cirru-editor.comp.editor :refer [comp-editor]]
+[cirru-editor.util.dom :refer [focus!]]
 ```
 
 Arguments of `comp-editor`:
 
 ```clojure
-(defn on-update! [snapshot dispatch!] (dispatch! :update snapshot))
+(defn on-update! [snapshot dispatch!]
+  (dispatch! :update snapshot)
+  (focus!))
 
 (defn on-command [snapshot dispatch! e])
 

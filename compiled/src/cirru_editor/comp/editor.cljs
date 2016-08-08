@@ -6,7 +6,8 @@
             [respo.comp.space :refer [comp-space]]
             [respo.comp.text :refer [comp-text]]
             [cirru-editor.modifier.core :refer [updater]]
-            [cirru-editor.comp.expression :refer [comp-expression]]))
+            [cirru-editor.comp.expression :refer [comp-expression]]
+            [cirru-editor.util.dom :refer [focus!]]))
 
 (def style-editor
  {:min-height "200px",
@@ -27,14 +28,7 @@
 (defn handle-update [snapshot on-update!]
   (fn [op op-data dispatch!]
     (on-update! (updater snapshot op op-data) dispatch!)
-    (js/requestAnimationFrame
-      (fn [timestamp]
-        (let [editor-focus (.querySelector
-                             js/document
-                             "#editor-focused")
-              current-focus (.-activeElement js/document)]
-          (if (not= editor-focus current-focus)
-            (.focus editor-focus)))))))
+    (focus!)))
 
 (defn render [snapshot on-update! on-command]
   (fn [state mutate!]

@@ -71,9 +71,7 @@
                                                :node-right
                                                coord
                                                dispatch!)
-        :else (if command?
-                (do (.preventDefault event) (on-command e dispatch!))
-                nil)))))
+        :else (if command? (on-command e dispatch!) nil)))))
 
 (defn on-click [modify! coord focus]
   (fn [e dispatch!]

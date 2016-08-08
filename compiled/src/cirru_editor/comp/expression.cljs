@@ -104,9 +104,7 @@
                                                 :command-paste
                                                 coord
                                                 dispatch!)
-        :else (if command?
-                (do (.preventDefault event) (on-command e dispatch!))
-                nil)))))
+        :else (if command? (on-command e dispatch!) nil)))))
 
 (defn render [expression
               modify!
