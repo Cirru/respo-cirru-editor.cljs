@@ -96,7 +96,7 @@
         :input (on-input modify! coord)},
        :attrs
        (merge
-         {:value token}
+         {:value token, :spellcheck true}
          (if (= coord focus) {:id "editor-focused"}))})))
 
 (def comp-token (create-comp :token render))
