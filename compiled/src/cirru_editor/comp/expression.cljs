@@ -36,16 +36,18 @@
           shift? (.-shiftKey event)
           command? (or (.-metaKey event) (.-ctrlKey event))]
       (cond
-        (= code keycode/space) (if
-                                 shift?
-                                 (modify!
-                                   :before-token
-                                   coord
-                                   dispatch!)
-                                 (modify!
-                                   :after-token
-                                   coord
-                                   dispatch!))
+        (= code keycode/space) (do
+                                 (.preventDefault event)
+                                 (if
+                                   shift?
+                                   (modify!
+                                     :before-token
+                                     coord
+                                     dispatch!)
+                                   (modify!
+                                     :after-token
+                                     coord
+                                     dispatch!)))
         (= code keycode/tab) (do
                                (.preventDefault event)
                                (if
@@ -81,10 +83,12 @@
                                      :after-expression
                                      coord
                                      dispatch!)))
-        (= code keycode/backspace) (modify!
-                                     :remove-node
-                                     coord
-                                     dispatch!)
+        (= code keycode/backspace) (do
+                                     (.preventDefault event)
+                                     (modify!
+                                       :remove-node
+                                       coord
+                                       dispatch!))
         (= code keycode/left) (do
                                 (.preventDefault event)
                                 (modify! :node-left coord dispatch!))
