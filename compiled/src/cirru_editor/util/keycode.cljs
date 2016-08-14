@@ -17,6 +17,8 @@
 
 (def tab 9)
 
+(def key-b 66)
+
 (def key-c 67)
 
 (def key-s 83)

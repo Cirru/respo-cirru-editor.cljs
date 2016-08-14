@@ -196,3 +196,33 @@
 (defn tree-reset [snapshot op-data]
   (let [tree op-data]
     (-> snapshot (assoc :tree tree) (assoc :focus []))))
+
+(defn duplicate-expression [snapshot op-data]
+  (let [focus (:focus snapshot)]
+    (if (empty? focus)
+      snapshot
+      (-> snapshot
+       (update
+         :focus
+         (fn [focus]
+           (if (= 1 (count focus))
+             [(inc (first focus))]
+             (conj (into [] (butlast focus)) (inc (last focus))))))
+       (update
+         :tree
+         (fn [tree]
+           (if (= 1 (count focus))
+             (let [pos (first focus)]
+               (into
+                 []
+                 (concat (subvec tree 0 (inc pos)) (subvec tree pos))))
+             (update-in
+               tree
+               (butlast focus)
+               (fn [parent]
+                 (let [pos (last focus)]
+                   (into
+                     []
+                     (concat
+                       (subvec parent 0 (inc pos))
+                       (subvec parent pos)))))))))))))

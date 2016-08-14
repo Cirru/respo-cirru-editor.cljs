@@ -85,13 +85,27 @@
                                      :remove-node
                                      coord
                                      dispatch!)
-        (= code keycode/left) (modify! :node-left coord dispatch!)
-        (= code keycode/right) (modify! :node-right coord dispatch!)
-        (= code keycode/up) (modify! :node-up coord dispatch!)
-        (= code keycode/down) (modify!
-                                :expression-down
-                                coord
-                                dispatch!)
+        (= code keycode/left) (do
+                                (.preventDefault event)
+                                (modify! :node-left coord dispatch!))
+        (= code keycode/right) (do
+                                 (.preventDefault event)
+                                 (modify! :node-right coord dispatch!))
+        (= code keycode/up) (do
+                              (.preventDefault event)
+                              (modify! :node-up coord dispatch!))
+        (= code keycode/down) (do
+                                (.preventDefault event)
+                                (modify!
+                                  :expression-down
+                                  coord
+                                  dispatch!))
+        (and command? (= code keycode/key-b)) (do
+                                                (.preventDefault event)
+                                                (modify!
+                                                  :duplicate-expression
+                                                  coord
+                                                  dispatch!))
         (and command? (= code keycode/key-c)) (modify!
                                                 :command-copy
                                                 coord

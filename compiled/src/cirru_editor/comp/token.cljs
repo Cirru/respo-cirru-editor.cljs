@@ -62,15 +62,21 @@
                                          coord
                                          dispatch!)
                                        (.preventDefault event)))
-        (= code keycode/up) (modify! :node-up coord dispatch!)
-        (and at-start? (= code keycode/left)) (modify!
-                                                :node-left
-                                                coord
-                                                dispatch!)
-        (and at-end? (= code keycode/right)) (modify!
-                                               :node-right
-                                               coord
-                                               dispatch!)
+        (= code keycode/up) (do
+                              (.preventDefault event)
+                              (modify! :node-up coord dispatch!))
+        (and at-start? (= code keycode/left)) (do
+                                                (.preventDefault event)
+                                                (modify!
+                                                  :node-left
+                                                  coord
+                                                  dispatch!))
+        (and at-end? (= code keycode/right)) (do
+                                               (.preventDefault event)
+                                               (modify!
+                                                 :node-right
+                                                 coord
+                                                 dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
 
 (defn on-click [modify! coord focus]
@@ -96,7 +102,7 @@
         :input (on-input modify! coord)},
        :attrs
        (merge
-         {:value token, :spellcheck true}
+         {:value token, :spellcheck false}
          (if (= coord focus) {:id "editor-focused"}))})))
 
 (def comp-token (create-comp :token render))

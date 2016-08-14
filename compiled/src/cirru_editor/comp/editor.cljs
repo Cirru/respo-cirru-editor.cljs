@@ -11,7 +11,6 @@
 
 (def style-editor
  {:min-height "200px",
-  :background-color (hsl 200 90 3),
   :flex 1,
   :padding "8px 8px 8px 8px",
   :display "flex",

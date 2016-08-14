@@ -48,5 +48,7 @@
                   command/paste
                   :tree-reset
                   tree/tree-reset
+                  :duplicate-expression
+                  tree/duplicate-expression
                   default-handler)]
     (handler snapshot op-data)))
