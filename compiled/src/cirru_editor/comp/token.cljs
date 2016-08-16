@@ -7,16 +7,16 @@
             [cirru-editor.util.keycode :as keycode]))
 
 (def style-token
- {:line-height 1.4,
+ {:line-height "24px",
   :color (hsl 180 80 50 0.6),
   :text-align "center",
   :font-size "15px",
-  :background-color (hsl 0 0 100 0.14),
+  :background-color (hsl 0 0 100 0),
   :max-width "200px",
   :padding "0 2px",
   :outline "none",
   :border "none",
-  :font-family "Menlo,monospace"})
+  :font-family "Source Code Pro,Menlo,monospace"})
 
 (defn on-input [modify! coord]
   (fn [e dispatch!]
@@ -98,7 +98,7 @@
             (+ 8 (text-width token 15 (:font-family style-token)))
             "px")}
          (if (or (has-blank? token) (zero? (count token)))
-           {:background-color (hsl 0 0 100 0.3)})
+           {:background-color (hsl 0 0 100 0.16)})
          (if head? {:color (hsl 30 80 60 0.9)})),
        :event
        {:keydown (on-keydown modify! coord token on-command),

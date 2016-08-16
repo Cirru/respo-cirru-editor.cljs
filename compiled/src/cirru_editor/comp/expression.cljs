@@ -13,15 +13,20 @@
 (def style-expression
  {:border-style "solid",
   :min-width "16px",
+  :box-sizing "border-box",
   :vertical-align "top",
-  :min-height "18px",
-  :margin-left "8px",
-  :margin-top "2px",
+  :min-height "26px",
+  :margin-left 12,
+  :margin-top 0,
+  :padding-right 0,
   :border-width "0 0 0 1px",
-  :padding "0px 0 0px 4px",
+  :padding-top 2,
+  :padding-left 8,
   :outline "none",
   :border-color (hsl 0 0 100 0.24),
-  :margin-bottom "2px"})
+  :padding-bottom 0,
+  :margin-right 0,
+  :margin-bottom 4})
 
 (declare comp-expression)
 
@@ -143,18 +148,22 @@
                           (shallow? expression)
                           (not after-expression?)
                           (not tail?)
+                          (not head?)
                           (pos? level)
                           (< (count expression) 5))
                       {:text-align "center",
-                       :margin-left "8px",
+                       :margin-left 4,
+                       :background-color (hsl 200 80 80 0),
+                       :padding-right 11,
                        :border-width "0 0 1px 0",
-                       :padding "2px 4px 2px 4px",
+                       :padding-left 11,
                        :display "inline-block",
-                       :margin-right "8px"})
+                       :padding-bottom 2,
+                       :margin-right 4})
                     (if (and tail? (not head?) (pos? level))
-                      {:margin-left "2px",
+                      {:margin-left 6,
+                       :background-color (hsl 0 80 80 0),
                        :border-width "0 0 0 1px",
-                       :padding "1px 0px 0px 12px",
                        :display "inline-block"})
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100 0.5)})),
