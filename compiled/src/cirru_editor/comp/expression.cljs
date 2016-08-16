@@ -18,7 +18,7 @@
   :margin-left "8px",
   :margin-top "2px",
   :border-width "0 0 0 1px",
-  :padding "0px 0 0px 8px",
+  :padding "0px 0 0px 4px",
   :outline "none",
   :border-color (hsl 0 0 100 0.24),
   :margin-bottom "2px"})
@@ -148,12 +148,13 @@
                       {:text-align "center",
                        :margin-left "8px",
                        :border-width "0 0 1px 0",
-                       :padding "0px 2px 2px 2px",
-                       :display "inline-block"})
+                       :padding "2px 4px 2px 4px",
+                       :display "inline-block",
+                       :margin-right "8px"})
                     (if (and tail? (not head?) (pos? level))
-                      {:margin-left "8px",
+                      {:margin-left "2px",
                        :border-width "0 0 0 1px",
-                       :padding "0px 0px 0px 8px",
+                       :padding "1px 0px 0px 12px",
                        :display "inline-block"})
                     (if (= coord focus)
                       {:border-color (hsl 0 0 100 0.5)})),

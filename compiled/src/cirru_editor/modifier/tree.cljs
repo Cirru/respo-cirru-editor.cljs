@@ -68,7 +68,10 @@
                                            expression
                                            (subvec
                                              parent
-                                             (inc position)))))))))))
+                                             (inc position))))))))))
+                           (update
+                             :focus
+                             (fn [focus] (into [] (butlast focus)))))
       (= 1 (count coord)) (-> snapshot
                            (update
                              :tree
@@ -93,6 +96,18 @@
                                          parent
                                          (inc position)))))))))
       :else snapshot)))
+
+(defn unfold-token [snapshot op-data]
+  (let [tree (:tree snapshot) focus (:focus snapshot)]
+    (if (empty? focus)
+      snapshot
+      (let [parent-coord (butlast focus)
+            parent (get-in tree parent-coord)]
+        (if (= (count parent) 1)
+          (-> snapshot
+           (update-in (cons :tree parent-coord) first)
+           (assoc :focus parent-coord))
+          snapshot)))))
 
 (defn before-token [snapshot op-data]
   (let [coord op-data]

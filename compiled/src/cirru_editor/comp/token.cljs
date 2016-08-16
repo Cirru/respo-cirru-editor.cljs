@@ -11,7 +11,7 @@
   :color (hsl 180 80 50 0.6),
   :text-align "center",
   :font-size "15px",
-  :background-color "transparent",
+  :background-color (hsl 0 0 100 0.14),
   :max-width "200px",
   :padding "0 2px",
   :outline "none",
@@ -42,7 +42,11 @@
         (= code keycode/tab) (do
                                (.preventDefault event)
                                (if
-                                 (not shift?)
+                                 shift?
+                                 (modify!
+                                   :unfold-token
+                                   coord
+                                   dispatch!)
                                  (modify! :fold-node coord dispatch!)))
         (= code keycode/enter) (if
                                  shift?

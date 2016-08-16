@@ -18,6 +18,8 @@
                   tree/fold-node
                   :unfold-expression
                   tree/unfold-expression
+                  :unfold-token
+                  tree/unfold-token
                   :before-expression
                   tree/before-expression
                   :after-expression
