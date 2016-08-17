@@ -2,8 +2,8 @@
 (ns cirru-editor.util.dom)
 
 (defn focus! []
-  (js/setTimeout
-    (fn []
+  (js/requestAnimationFrame
+    (fn [timestap]
       (let [editor-focus (.querySelector js/document "#editor-focused")
             current-focus (.-activeElement js/document)]
         (if (some? editor-focus)
