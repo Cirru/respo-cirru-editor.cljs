@@ -11,10 +11,12 @@
   :color (hsl 180 80 50 0.6),
   :text-align "center",
   :font-size "15px",
+  :margin-left 2,
   :background-color (hsl 0 0 100 0),
-  :max-width "200px",
+  :max-width "320px",
   :padding "0 2px",
   :outline "none",
+  :margin-right 2,
   :border "none",
   :font-family "Source Code Pro,Menlo,monospace"})
 
