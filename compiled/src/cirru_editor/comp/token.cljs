@@ -83,6 +83,13 @@
                                                  :node-right
                                                  coord
                                                  dispatch!))
+        (and shift? command? (= code keycode/key-v)) (do
+                                                       (.preventDefault
+                                                         event)
+                                                       (modify!
+                                                         :command-paste
+                                                         coord
+                                                         dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
 
 (defn on-click [modify! coord focus]
