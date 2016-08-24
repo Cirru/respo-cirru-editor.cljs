@@ -19,6 +19,8 @@
 
 (def key-b 66)
 
+(def key-f 70)
+
 (def key-c 67)
 
 (def key-s 83)
