@@ -17,7 +17,7 @@
 
 (def style-folded
  {:border-style "solid",
-  :line-height "31px",
+  :line-height "27px",
   :color (hsl 180 80 60),
   :vertical-align "top",
   :font-size "15px",
@@ -29,6 +29,7 @@
   :border-color (hsl 0 0 100 0.5),
   :display "inline-block",
   :border-radius "16px",
+  :margin-bottom "4px",
   :font-family "Source Code Pro,Menlo,monospace"})
 
 (def style-expression
