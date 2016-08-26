@@ -93,11 +93,11 @@
                                  (if
                                    shift?
                                    (modify!
-                                     :prepend-expression
+                                     :append-expression
                                      coord
                                      dispatch!)
                                    (modify!
-                                     :append-expression
+                                     :prepend-expression
                                      coord
                                      dispatch!))
                                  (if
