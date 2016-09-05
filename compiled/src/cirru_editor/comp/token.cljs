@@ -32,7 +32,10 @@
           command? (or (.-metaKey event) (.-ctrlKey event))
           target (.-target event)
           at-start? (zero? (.-selectionStart target))
-          at-end? (= (count token) (.-selectionEnd target))]
+          at-end? (= (count token) (.-selectionEnd target))
+          thin-cursor? (=
+                         (.-selectionStart target)
+                         (.-selectionEnd target))]
       (cond
         (and (= code keycode/space) (not shift?)) (do
                                                     (.preventDefault
@@ -71,18 +74,20 @@
         (= code keycode/up) (do
                               (.preventDefault event)
                               (modify! :node-up coord dispatch!))
-        (and at-start? (= code keycode/left)) (do
-                                                (.preventDefault event)
-                                                (modify!
-                                                  :node-left
-                                                  coord
-                                                  dispatch!))
-        (and at-end? (= code keycode/right)) (do
-                                               (.preventDefault event)
-                                               (modify!
-                                                 :node-right
-                                                 coord
-                                                 dispatch!))
+        (and thin-cursor? at-start? (= code keycode/left)) (do
+                                                             (.preventDefault
+                                                               event)
+                                                             (modify!
+                                                               :node-left
+                                                               coord
+                                                               dispatch!))
+        (and thin-cursor? at-end? (= code keycode/right)) (do
+                                                            (.preventDefault
+                                                              event)
+                                                            (modify!
+                                                              :node-right
+                                                              coord
+                                                              dispatch!))
         (and shift? command? (= code keycode/key-v)) (do
                                                        (.preventDefault
                                                          event)
