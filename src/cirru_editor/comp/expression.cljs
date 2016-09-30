@@ -156,9 +156,6 @@
   :margin-right 0,
   :margin-bottom 4})
 
-(def comp-expression
- (create-comp :expression init-state update-state render))
-
 (defn render [expression
               modify!
               coord
@@ -250,3 +247,6 @@
                   (inc idx)
                   (rest expr)
                   (vector? item))))))))))
+
+(def comp-expression
+ (create-comp :expression init-state update-state render))
