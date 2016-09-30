@@ -10,15 +10,20 @@
     :clipboard [],
     :focus []}))
 
-(defonce states-ref (atom {}))
-
 (defn dispatch! [op op-data]
   (println "dispatch:" op op-data)
   (case op :save (reset! store-ref op-data) nil))
 
+(defonce states-ref (atom {}))
+
 (defn render-app! []
   (let [target (.querySelector js/document "#app")]
     (render! (comp-container @store-ref) target dispatch! states-ref)))
+
+(defn on-jsload []
+  (clear-cache!)
+  (render-app!)
+  (println "code updated."))
 
 (defn -main []
   (enable-console-print!)
@@ -37,8 +42,3 @@
        (.catch (fn [error] (println "failed:" error)))))))
 
 (set! js/window.onload -main)
-
-(defn on-jsload []
-  (clear-cache!)
-  (render-app!)
-  (println "code updated."))

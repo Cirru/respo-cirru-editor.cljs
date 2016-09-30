@@ -6,23 +6,13 @@
             [cirru-editor.util.detect :refer [has-blank?]]
             [cirru-editor.util.keycode :as keycode]))
 
-(def style-token
- {:line-height "24px",
-  :color (hsl 180 80 50 0.6),
-  :text-align "center",
-  :font-size "15px",
-  :margin-left 2,
-  :background-color (hsl 0 0 100 0),
-  :max-width "320px",
-  :padding "0 2px",
-  :outline "none",
-  :margin-right 2,
-  :border "none",
-  :font-family "Source Code Pro,Menlo,monospace"})
-
 (defn on-input [modify! coord]
   (fn [e dispatch!]
     (modify! :update-token [coord (:value e)] dispatch!)))
+
+(defn on-click [modify! coord focus]
+  (fn [e dispatch!]
+    (if (not= coord focus) (modify! :focus-to coord dispatch!))))
 
 (defn on-keydown [modify! coord token on-command]
   (fn [e dispatch!]
@@ -97,9 +87,19 @@
                                                          dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
 
-(defn on-click [modify! coord focus]
-  (fn [e dispatch!]
-    (if (not= coord focus) (modify! :focus-to coord dispatch!))))
+(def style-token
+ {:line-height "24px",
+  :color (hsl 180 80 50 0.6),
+  :text-align "center",
+  :font-size "15px",
+  :margin-left 2,
+  :background-color (hsl 0 0 100 0),
+  :max-width "320px",
+  :padding "0 2px",
+  :outline "none",
+  :margin-right 2,
+  :border "none",
+  :font-family "Source Code Pro,Menlo,monospace"})
 
 (defn render [token modify! coord focus on-command head?]
   (fn [state mutate!]

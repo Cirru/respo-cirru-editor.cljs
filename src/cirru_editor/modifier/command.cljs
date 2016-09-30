@@ -5,6 +5,10 @@
   (let [coord op-data expression (get-in snapshot (cons :tree coord))]
     (-> snapshot (assoc :clipboard expression))))
 
+(defn paste [snapshot op-data]
+  (let [coord op-data]
+    (-> snapshot (assoc-in (cons :tree coord) (:clipboard snapshot)))))
+
 (defn cut [snapshot op-data]
   (let [coord op-data
         expression (get-in snapshot (cons :tree coord))
@@ -30,7 +34,3 @@
            (into [] (butlast coord))
            (conj (into [] (butlast coord)) (dec position)))))
      (assoc :clipboard expression))))
-
-(defn paste [snapshot op-data]
-  (let [coord op-data]
-    (-> snapshot (assoc-in (cons :tree coord) (:clipboard snapshot)))))

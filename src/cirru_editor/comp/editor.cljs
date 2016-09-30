@@ -9,6 +9,17 @@
             [cirru-editor.comp.expression :refer [comp-expression]]
             [cirru-editor.util.dom :refer [focus!]]))
 
+(defn handle-command [on-command snapshot]
+  (fn [e dispatch!] (on-command snapshot dispatch! e)))
+
+(def style-box
+ {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})
+
+(defn handle-update [snapshot on-update!]
+  (fn [op op-data dispatch!]
+    (on-update! (updater snapshot op op-data) dispatch!)
+    (focus!)))
+
 (def style-editor
  {:min-height "200px",
   :flex 1,
@@ -16,17 +27,6 @@
   :display "flex",
   :position "relative",
   :flex-direction "column"})
-
-(def style-box
- {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})
-
-(defn handle-command [on-command snapshot]
-  (fn [e dispatch!] (on-command snapshot dispatch! e)))
-
-(defn handle-update [snapshot on-update!]
-  (fn [op op-data dispatch!]
-    (on-update! (updater snapshot op op-data) dispatch!)
-    (focus!)))
 
 (defn render [snapshot on-update! on-command]
   (fn [state mutate!]

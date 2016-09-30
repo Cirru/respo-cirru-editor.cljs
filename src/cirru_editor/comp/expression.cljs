@@ -11,7 +11,9 @@
                                               deep?]]
             [cirru-editor.util.keycode :as keycode]))
 
-(defn init-state [& args] false)
+(declare render)
+
+(declare comp-expression)
 
 (defn update-state [state] (not state))
 
@@ -32,29 +34,13 @@
   :margin-bottom "4px",
   :font-family "Source Code Pro,Menlo,monospace"})
 
-(def style-expression
- {:border-style "solid",
-  :min-width "16px",
-  :box-sizing "border-box",
-  :vertical-align "top",
-  :min-height "26px",
-  :margin-left 12,
-  :margin-top 0,
-  :padding-right 0,
-  :border-width "0 0 0 1px",
-  :padding-top 2,
-  :padding-left 8,
-  :outline "none",
-  :border-color (hsl 0 0 100 0.24),
-  :padding-bottom 0,
-  :margin-right 0,
-  :margin-bottom 4})
-
-(declare comp-expression)
-
 (defn on-click [modify! coord focus]
   (fn [e dispatch!]
     (if (not= coord focus) (modify! :focus-to coord dispatch!))))
+
+(defn on-unfold [mutate!] (fn [e dispatch!] (mutate!)))
+
+(defn init-state [& args] false)
 
 (defn on-keydown [modify! coord on-command mutate!]
   (fn [e dispatch!]
@@ -152,7 +138,26 @@
         (and command? shift? (= code keycode/key-f)) (mutate!)
         :else (if command? (on-command e dispatch!) nil)))))
 
-(defn on-unfold [mutate!] (fn [e dispatch!] (mutate!)))
+(def style-expression
+ {:border-style "solid",
+  :min-width "16px",
+  :box-sizing "border-box",
+  :vertical-align "top",
+  :min-height "26px",
+  :margin-left 12,
+  :margin-top 0,
+  :padding-right 0,
+  :border-width "0 0 0 1px",
+  :padding-top 2,
+  :padding-left 8,
+  :outline "none",
+  :border-color (hsl 0 0 100 0.24),
+  :padding-bottom 0,
+  :margin-right 0,
+  :margin-bottom 4})
+
+(def comp-expression
+ (create-comp :expression init-state update-state render))
 
 (defn render [expression
               modify!
@@ -245,6 +250,3 @@
                   (inc idx)
                   (rest expr)
                   (vector? item))))))))))
-
-(def comp-expression
- (create-comp :expression init-state update-state render))
