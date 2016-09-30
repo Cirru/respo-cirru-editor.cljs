@@ -17,7 +17,7 @@
          '[adzerk.boot-test   :refer :all]
          '[clojure.java.io    :as    io])
 
-(def +version+ "0.1.16")
+(def +version+ "0.1.17")
 
 (task-options!
   pom {:project     'cirru/editor
@@ -93,7 +93,8 @@
     :source-paths #{"cirru/src" "cirru/app"})
   (comp
     (transform-cirru)
-    (cljs :optimizations :advanced)
+    (cljs :optimizations :advanced
+          :compiler-options {:language-in :ecmascript5})
     (html-file :data {:build? true})
     (target)))
 
