@@ -1,12 +1,14 @@
 
 (ns cirru-editor.comp.editor
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [create-comp div]]
+            [respo.alias :refer [create-comp div style]]
             [respo.comp.debug :refer [comp-debug]]
             [respo.comp.space :refer [comp-space]]
             [respo.comp.text :refer [comp-text]]
             [cirru-editor.modifier.core :refer [updater]]
-            [cirru-editor.comp.expression :refer [comp-expression]]))
+            [cirru-editor.comp.expression :refer [comp-expression style-expression]]
+            [cirru-editor.comp.token :refer [style-token]]
+            [respo.render.html :refer [style->string]]))
 
 (defn handle-command [on-command snapshot]
   (fn [e dispatch!] (on-command snapshot dispatch! e)))
@@ -24,10 +26,19 @@
    :position "relative",
    :flex-direction "column"})
 
+(def common-styles
+  (str
+   ".cirru-expression{"
+   (style->string style-expression)
+   "} .cirru-token{"
+   (style->string style-token)
+   "}"))
+
 (defn render [snapshot on-update! on-command]
   (fn [state mutate!]
     (div
      {:style style-editor}
+     (style {:attrs {:innerHTML common-styles}})
      (div
       {:style style-box}
       (comp-expression

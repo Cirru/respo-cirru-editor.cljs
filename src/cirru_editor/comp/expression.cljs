@@ -83,24 +83,6 @@
         (and command? shift? (= code keycode/key-f)) (mutate!)
         :else (if command? (on-command e dispatch!) nil)))))
 
-(def style-expression
-  {:border-style "solid",
-   :min-width "16px",
-   :box-sizing "border-box",
-   :vertical-align "top",
-   :min-height "26px",
-   :margin-left 12,
-   :margin-top 0,
-   :padding-right 0,
-   :border-width "0 0 0 1px",
-   :padding-top 2,
-   :padding-left 8,
-   :outline "none",
-   :border-color (hsl 0 0 100 0.24),
-   :padding-bottom 0,
-   :margin-right 0,
-   :margin-bottom 4})
-
 (defn render [expression modify! coord level tail? focus on-command head? after-expression?]
   (fn [state mutate!]
     (let [exp-size (count expression)]
@@ -112,7 +94,7 @@
          (comp-text (first expression) nil))
         (div
          {:style (merge
-                  style-expression
+                  {}
                   (if (and (shallow? expression)
                            (not after-expression?)
                            (not tail?)
@@ -135,7 +117,9 @@
                   (if (= coord focus) {:border-color (hsl 0 0 100 0.5)})),
           :event {:keydown (on-keydown modify! coord on-command mutate!),
                   :click (on-click modify! coord focus)},
-          :attrs (merge {:tab-index 0} (if (= coord focus) {:id "editor-focused"}))}
+          :attrs (merge
+                  {:tab-index 0, :class-name "cirru-expression"}
+                  (if (= coord focus) {:id "editor-focused"}))}
          (loop [acc [], idx 0, expr expression, child-after-expression? false]
            (if (empty? expr)
              acc
@@ -169,3 +153,21 @@
                (recur next-acc (inc idx) (rest expr) (vector? item))))))))))
 
 (def comp-expression (create-comp :expression init-state update-state render))
+
+(def style-expression
+  {:border-style "solid",
+   :min-width "16px",
+   :box-sizing "border-box",
+   :vertical-align "top",
+   :min-height "26px",
+   :margin-left 12,
+   :margin-top 0,
+   :padding-right 0,
+   :border-width "0 0 0 1px",
+   :padding-top 2,
+   :padding-left 8,
+   :outline "none",
+   :border-color (hsl 0 0 100 0.24),
+   :padding-bottom 0,
+   :margin-right 0,
+   :margin-bottom 4})

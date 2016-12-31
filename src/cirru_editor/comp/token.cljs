@@ -65,7 +65,7 @@
   (fn [state mutate!]
     (input
      {:style (merge
-              style-token
+              {}
               {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
               (if (or (has-blank? token) (zero? (count token)))
                 {:background-color (hsl 0 0 100 0.16)})
@@ -74,7 +74,7 @@
               :click (on-click modify! coord focus),
               :input (on-input modify! coord)},
       :attrs (merge
-              {:value token, :spellcheck false}
+              {:value token, :spellcheck false, :class-name "cirru-token"}
               (if (= coord focus) {:id "editor-focused"}))})))
 
 (def comp-token (create-comp :token render))
