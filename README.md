@@ -11,7 +11,7 @@ Demo http://repo.cirru.org/respo-cirru-editor/
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
 
 ```clojure
-[cirru/editor "0.1.17"]
+[cirru/editor "0.1.18"]
 ```
 
 Import `comp-editor` like this:
@@ -25,8 +25,7 @@ Arguments of `comp-editor`:
 
 ```clojure
 (defn on-update! [snapshot dispatch!]
-  (dispatch! :update snapshot)
-  (focus!))
+  (dispatch! :update snapshot))
 
 (defn on-command [snapshot dispatch! e])
 
@@ -39,6 +38,10 @@ Arguments of `comp-editor`:
     (div {:style {}}
       (comp-editor snapshot on-update! on-command))))
 ```
+
+`focus!` is a side-effect. You have to make sure it's called only editor is changed.
+Respo does not provide a `didMount` hook, you have to handle it globally on you own.
+Take the code in this repo for example.
 
 ### Develop
 
