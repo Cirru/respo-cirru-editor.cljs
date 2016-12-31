@@ -1,5 +1,5 @@
 
-(ns cirru-editor.util.keycode)
+(ns cirru-editor.util.keycode )
 
 (def space 32)
 

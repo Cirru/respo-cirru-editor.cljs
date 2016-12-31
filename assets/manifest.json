@@ -1,0 +1,15 @@
+{
+  "short_name": "Cirru Editor",
+  "name": "Cirru Editor",
+  "icons": [
+    {
+      "src": "http://logo.mvc-works.org/mvc.png",
+      "sizes": "460x460"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eeeeff",
+  "theme_color": "#eeeeff"
+}
