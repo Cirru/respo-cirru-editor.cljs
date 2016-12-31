@@ -41,7 +41,7 @@ Arguments of `comp-editor`:
 
 `focus!` is a side-effect. You have to make sure it's called only editor is changed.
 Respo does not provide a `didMount` hook, you have to handle it globally on you own.
-Take the code in this repo for example.
+Take `src/cirru_editor/main.cljs` for example.
 
 ### Develop
 

@@ -22,8 +22,6 @@
     (render! (comp-container @store-ref) target dispatch! states-ref)
     (if @touched-ref (do (focus!) (reset! touched-ref false)))))
 
-(defn on-jsload [] (clear-cache!) (render-app!) (println "code updated."))
-
 (defn -main []
   (enable-console-print!)
   (render-app!)
@@ -38,4 +36,4 @@
           (.then (fn [registration] (println "resigtered:" registration.scope)))
           (.catch (fn [error] (println "failed:" error)))))))
 
-(set! js/window.onload -main)
+(defn on-jsload! [] (clear-cache!) (render-app!) (println "code updated."))

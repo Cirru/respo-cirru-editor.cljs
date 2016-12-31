@@ -69,7 +69,7 @@
   (comp
     (editor!)
     (html-file :data {:build? false})
-    (reload :on-jsload 'cirru-editor.core/on-jsload
+    (reload :on-jsload 'cirru-editor.main/on-jsload!
             :cljs-asset-path ".")
     (cljs :compiler-options {:language-in :ecmascript5})
     (target)))
