@@ -13,7 +13,7 @@
 (defn handle-command [on-command snapshot]
   (fn [e dispatch!] (on-command snapshot dispatch! e)))
 
-(defn common-styles []
+(def common-styles
   (str
    ".cirru-expression{"
    (style->string style-expression)
@@ -38,7 +38,7 @@
   (fn [state mutate!]
     (div
      {:style style-editor}
-     (style {:attrs {:innerHTML (common-styles)}})
+     (style {:attrs {:innerHTML common-styles}})
      (div
       {:style style-box}
       (comp-expression

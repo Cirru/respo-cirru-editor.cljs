@@ -20,7 +20,7 @@
    :outline "none",
    :max-width "320px",
    :background-color (hsl 0 0 100 0),
-   :color (hsl 200 40 60 0.8),
+   :color (hsl 200 12 67 0.9),
    :text-align "center"})
 
 (defn on-input [modify! coord]
@@ -75,6 +75,6 @@
               {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
               (if (or (has-blank? token) (zero? (count token)))
                 {:background-color (hsl 0 0 100 0.16)})
-              (if head? {:color (hsl 40 100 60 0.9)}))})))
+              (if head? {:color (hsl 40 80 60 0.9)}))})))
 
 (def comp-token (create-comp :token render))

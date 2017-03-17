@@ -156,7 +156,7 @@
 
 (def style-expression
   {:border-style "solid",
-   :border-color (hsl 0 0 100 0.4),
+   :border-color (hsl 0 0 32 0.9),
    :outline "none",
    :padding-left 8,
    :padding-right 0,

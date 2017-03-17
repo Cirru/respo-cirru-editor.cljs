@@ -95,7 +95,7 @@
                                                       [":background-color" ["hsl" "0" "80" "80" "0"]]]]
                                                     ["if"
                                                      ["=" "coord" "focus"]
-                                                     ["{}" [":border-color" ["hsl" "0" "0" "100" "0.5"]]]]]]
+                                                     ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]]]
                                                   [":attrs"
                                                    ["merge"
                                                     ["{}" [":tab-index" "0"] [":class-name" "|cirru-expression"]]
@@ -230,7 +230,7 @@
                                                        "style-expression"
                                                        ["{}"
                                                         [":border-style" "|solid"]
-                                                        [":border-color" ["hsl" "0" "0" "100" "0.24"]]
+                                                        [":border-color" ["hsl" "0" "0" "32" "0.9"]]
                                                         [":outline" "|none"]
                                                         [":padding-left" "8"]
                                                         [":padding-right" "0"]
@@ -456,7 +456,7 @@
                                              ["if"
                                               ["or" ["has-blank?" "token"] ["zero?" ["count" "token"]]]
                                               ["{}" [":background-color" ["hsl" "0" "0" "100" "0.16"]]]]
-                                             ["if" "head?" ["{}" [":color" ["hsl" "30" "80" "60" "0.9"]]]]]]]]]],
+                                             ["if" "head?" ["{}" [":color" ["hsl" "40" "80" "60" "0.9"]]]]]]]]]],
                               "on-click" ["defn"
                                           "on-click"
                                           ["modify!" "coord" "focus"]
@@ -476,7 +476,7 @@
                                               [":outline" "|none"]
                                               [":max-width" "|320px"]
                                               [":background-color" ["hsl" "0" "0" "100" "0"]]
-                                              [":color" ["hsl" "180" "80" "50" "0.6"]]
+                                              [":color" ["hsl" "200" "12" "67" "0.9"]]
                                               [":text-align" "|center"]]],
                               "on-input" ["defn"
                                           "on-input"
