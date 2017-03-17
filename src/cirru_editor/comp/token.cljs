@@ -6,11 +6,25 @@
             [cirru-editor.util.detect :refer [has-blank?]]
             [cirru-editor.util.keycode :as keycode]))
 
-(defn on-input [modify! coord]
-  (fn [e dispatch!] (modify! :update-token [coord (:value e)] dispatch!)))
-
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord dispatch!))))
+
+(def style-token
+  {:border "none",
+   :font-size "15px",
+   :line-height "24px",
+   :font-family "Source Code Pro,Menlo,monospace",
+   :padding "0 2px",
+   :margin-left 2,
+   :margin-right 2,
+   :outline "none",
+   :max-width "320px",
+   :background-color (hsl 0 0 100 0),
+   :color (hsl 200 40 60 0.8),
+   :text-align "center"})
+
+(defn on-input [modify! coord]
+  (fn [e dispatch!] (modify! :update-token [coord (:value e)] dispatch!)))
 
 (defn on-keydown [modify! coord token on-command]
   (fn [e dispatch!]
@@ -47,34 +61,20 @@
           (do (.preventDefault event) (modify! :command-paste coord dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
 
-(def style-token
-  {:line-height "24px",
-   :color (hsl 180 80 50 0.6),
-   :text-align "center",
-   :font-size "15px",
-   :margin-left 2,
-   :background-color (hsl 0 0 100 0),
-   :max-width "320px",
-   :padding "0 2px",
-   :outline "none",
-   :margin-right 2,
-   :border "none",
-   :font-family "Source Code Pro,Menlo,monospace"})
-
 (defn render [token modify! coord focus on-command head?]
   (fn [state mutate!]
     (input
-     {:style (merge
+     {:attrs (merge
+              {:value token, :spellcheck false, :class-name "cirru-token"}
+              (if (= coord focus) {:id "editor-focused"})),
+      :event {:input (on-input modify! coord),
+              :keydown (on-keydown modify! coord token on-command),
+              :click (on-click modify! coord focus)},
+      :style (merge
               {}
               {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
               (if (or (has-blank? token) (zero? (count token)))
                 {:background-color (hsl 0 0 100 0.16)})
-              (if head? {:color (hsl 30 80 60 0.9)})),
-      :event {:keydown (on-keydown modify! coord token on-command),
-              :click (on-click modify! coord focus),
-              :input (on-input modify! coord)},
-      :attrs (merge
-              {:value token, :spellcheck false, :class-name "cirru-token"}
-              (if (= coord focus) {:id "editor-focused"}))})))
+              (if head? {:color (hsl 40 100 60 0.9)}))})))
 
 (def comp-token (create-comp :token render))

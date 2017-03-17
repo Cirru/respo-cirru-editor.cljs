@@ -13,20 +13,7 @@
 (defn handle-command [on-command snapshot]
   (fn [e dispatch!] (on-command snapshot dispatch! e)))
 
-(def style-box {:flex 1, :padding "100px 0 200px 0", :overflow-y "auto"})
-
-(defn handle-update [snapshot on-update!]
-  (fn [op op-data dispatch!] (on-update! (updater snapshot op op-data) dispatch!)))
-
-(def style-editor
-  {:min-height "200px",
-   :flex 1,
-   :padding "8px 8px 8px 8px",
-   :display "flex",
-   :position "relative",
-   :flex-direction "column"})
-
-(def common-styles
+(defn common-styles []
   (str
    ".cirru-expression{"
    (style->string style-expression)
@@ -34,11 +21,24 @@
    (style->string style-token)
    "}"))
 
+(def style-box {:flex 1, :overflow-y "auto", :padding "100px 0 200px 0"})
+
+(def style-editor
+  {:padding "8px 8px 8px 8px",
+   :min-height "200px",
+   :display "flex",
+   :flex-direction "column",
+   :position "relative",
+   :flex 1})
+
+(defn handle-update [snapshot on-update!]
+  (fn [op op-data dispatch!] (on-update! (updater snapshot op op-data) dispatch!)))
+
 (defn render [snapshot on-update! on-command]
   (fn [state mutate!]
     (div
      {:style style-editor}
-     (style {:attrs {:innerHTML common-styles}})
+     (style {:attrs {:innerHTML (common-styles)}})
      (div
       {:style style-box}
       (comp-expression

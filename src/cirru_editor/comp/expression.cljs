@@ -16,21 +16,21 @@
 (defn update-state [state] (not state))
 
 (def style-folded
-  {:border-style "solid",
-   :line-height "27px",
+  {:display "inline-block",
    :color (hsl 180 80 60),
-   :vertical-align "top",
+   :font-family "Source Code Pro,Menlo,monospace",
    :font-size "15px",
-   :cursor "pointer",
-   :padding-right 16,
-   :border-width "1px",
-   :padding-left 16,
    :outline "none",
+   :border-width "1px",
+   :border-style "solid",
    :border-color (hsl 0 0 100 0.5),
-   :display "inline-block",
+   :padding-left 16,
+   :padding-right 16,
+   :vertical-align "top",
+   :line-height "27px",
    :border-radius "16px",
-   :margin-bottom "4px",
-   :font-family "Source Code Pro,Menlo,monospace"})
+   :cursor "pointer",
+   :margin-bottom "4px"})
 
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord dispatch!))))
@@ -89,8 +89,8 @@
       (if state
         (div
          {:style style-folded,
-          :event {:keydown (on-keydown modify! coord on-command mutate!),
-                  :click (on-unfold mutate!)}}
+          :event {:click (on-unfold mutate!),
+                  :keydown (on-keydown modify! coord on-command mutate!)}}
          (comp-text (first expression) nil))
         (div
          {:style (merge
@@ -101,25 +101,25 @@
                            (not head?)
                            (pos? level)
                            (< (count expression) 5))
-                    {:text-align "center",
-                     :margin-left 4,
-                     :background-color (hsl 200 80 80 0),
-                     :padding-right 15,
+                    {:display "inline-block",
                      :border-width "0 0 1px 0",
                      :padding-left 17,
-                     :display "inline-block",
+                     :padding-right 15,
                      :padding-bottom 2,
-                     :margin-right 4})
+                     :margin-left 4,
+                     :margin-right 4,
+                     :text-align "center",
+                     :background-color (hsl 200 80 80 0)})
                   (if (and tail? (not head?) (pos? level))
-                    {:background-color (hsl 0 80 80 0),
+                    {:display "inline-block",
                      :border-width "0 0 0 1px",
-                     :display "inline-block"})
-                  (if (= coord focus) {:border-color (hsl 0 0 100 0.5)})),
-          :event {:keydown (on-keydown modify! coord on-command mutate!),
-                  :click (on-click modify! coord focus)},
+                     :background-color (hsl 0 80 80 0)})
+                  (if (= coord focus) {:border-color (hsl 0 0 100 0.6)})),
           :attrs (merge
                   {:tab-index 0, :class-name "cirru-expression"}
-                  (if (= coord focus) {:id "editor-focused"}))}
+                  (if (= coord focus) {:id "editor-focused"})),
+          :event {:click (on-click modify! coord focus),
+                  :keydown (on-keydown modify! coord on-command mutate!)}}
          (loop [acc [], idx 0, expr expression, child-after-expression? false]
            (if (empty? expr)
              acc
@@ -156,18 +156,18 @@
 
 (def style-expression
   {:border-style "solid",
-   :min-width "16px",
-   :box-sizing "border-box",
-   :vertical-align "top",
-   :min-height "26px",
-   :margin-left 12,
-   :margin-top 0,
-   :padding-right 0,
-   :border-width "0 0 0 1px",
-   :padding-top 2,
-   :padding-left 8,
+   :border-color (hsl 0 0 100 0.4),
    :outline "none",
-   :border-color (hsl 0 0 100 0.24),
+   :padding-left 8,
+   :padding-right 0,
+   :padding-top 2,
    :padding-bottom 0,
+   :margin-left 12,
    :margin-right 0,
-   :margin-bottom 4})
+   :margin-top 0,
+   :margin-bottom 4,
+   :border-width "0 0 0 1px",
+   :min-height "26px",
+   :min-width "16px",
+   :vertical-align "top",
+   :box-sizing "border-box"})

@@ -4,19 +4,19 @@
             [respo.alias :refer [create-comp div span]]
             [cirru-editor.comp.editor :refer [comp-editor]]))
 
-(defn on-update! [snapshot dispatch!] (dispatch! :save snapshot))
-
 (defn on-command [snapshot dispatch! e] (println "command" e))
+
+(defn on-update! [snapshot dispatch!] (dispatch! :save snapshot))
 
 (defn render [store]
   (fn [state mutate!]
     (div
-     {:style {:background-color (hsl 0 0 0),
+     {:style {:position "absolute",
               :width "100%",
+              :height "100%",
               :display "flex",
-              :position "absolute",
               :flex-direction "column",
-              :height "100%"}}
+              :background-color (hsl 0 0 0)}}
      (comp-editor store on-update! on-command))))
 
 (def comp-container (create-comp :container render))

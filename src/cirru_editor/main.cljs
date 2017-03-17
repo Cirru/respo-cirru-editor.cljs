@@ -5,10 +5,10 @@
             [cljs.reader :refer [read-string]]
             [cirru-editor.util.dom :refer [focus!]]))
 
-(def touched-ref (atom false))
-
 (defonce store-ref
-  (atom {:tree [["demo" ["cute" ["cute"]] "demo"] ["a"]], :clipboard [], :focus []}))
+  (atom {:tree [["demo" ["cute" ["cute"]] "demo"] ["a"]], :focus [], :clipboard []}))
+
+(def touched-ref (atom false))
 
 (defn dispatch! [op op-data]
   (println "dispatch:" op op-data)
@@ -22,13 +22,13 @@
     (render! (comp-container @store-ref) target dispatch! states-ref)
     (if @touched-ref (do (focus!) (reset! touched-ref false)))))
 
+(defn on-jsload! [] (clear-cache!) (render-app!) (println "code updated."))
+
 (defn -main []
   (enable-console-print!)
   (render-app!)
   (add-watch store-ref :changes render-app!)
   (add-watch states-ref :changes render-app!)
   (println "app started!"))
-
-(defn on-jsload! [] (clear-cache!) (render-app!) (println "code updated."))
 
 (set! js/window.onload -main)
