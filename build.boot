@@ -35,7 +35,7 @@
                              :source-map true})
     (target :no-clean true)))
 
-(def +version+ "0.1.19")
+(def +version+ "0.1.20")
 
 (deftask build []
   (comp

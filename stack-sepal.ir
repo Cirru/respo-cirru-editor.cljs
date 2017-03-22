@@ -74,7 +74,6 @@
                                                       ["shallow?" "expression"]
                                                       ["not" "after-expression?"]
                                                       ["not" "tail?"]
-                                                      ["not" "head?"]
                                                       ["pos?" "level"]
                                                       ["<" ["count" "expression"] "5"]]
                                                      ["{}"

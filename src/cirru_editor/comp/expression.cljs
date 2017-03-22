@@ -98,7 +98,6 @@
                   (if (and (shallow? expression)
                            (not after-expression?)
                            (not tail?)
-                           (not head?)
                            (pos? level)
                            (< (count expression) 5))
                     {:display "inline-block",
