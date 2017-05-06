@@ -31,7 +31,7 @@
                              :parallel-build true})
     (target :no-clean true)))
 
-(def +version+ "0.1.20")
+(def +version+ "0.2.0")
 
 (deftask build []
   (comp
