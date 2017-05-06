@@ -11,7 +11,7 @@ Demo http://repo.cirru.org/respo-cirru-editor/
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
 
 ```clojure
-[cirru/editor "0.1.20"]
+[cirru/editor "0.2.0"]
 ```
 
 Import `comp-editor` like this:
@@ -33,10 +33,11 @@ Arguments of `comp-editor`:
                         :focus []
                         :clipboard []}})
 
-(defn render [snapshot]
-  (fn [state mutate!]
+; states comes from Respo@4.x states management
+(defn render [states snapshot]
+  (fn [cursor]
     (div {:style {}}
-      (comp-editor snapshot on-update! on-command))))
+      (comp-editor states snapshot on-update! on-command))))
 ```
 
 `focus!` is a side-effect. You have to make sure it's called only editor is changed.

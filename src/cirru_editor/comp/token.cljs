@@ -61,20 +61,21 @@
           (do (.preventDefault event) (modify! :command-paste coord dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
 
-(defn render [token modify! coord focus on-command head?]
-  (fn [state mutate!]
-    (input
-     {:attrs (merge
-              {:value token, :spellcheck false, :class-name "cirru-token"}
-              (if (= coord focus) {:id "editor-focused"})),
-      :event {:input (on-input modify! coord),
-              :keydown (on-keydown modify! coord token on-command),
-              :click (on-click modify! coord focus)},
-      :style (merge
-              {}
-              {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
-              (if (or (has-blank? token) (zero? (count token)))
-                {:background-color (hsl 0 0 100 0.16)})
-              (if head? {:color (hsl 40 80 60 0.9)}))})))
-
-(def comp-token (create-comp :token render))
+(def comp-token
+  (create-comp
+   :token
+   (fn [token modify! coord focus on-command head?]
+     (fn [state mutate!]
+       (input
+        {:attrs (merge
+                 {:value token, :spellcheck false, :class-name "cirru-token"}
+                 (if (= coord focus) {:id "editor-focused"})),
+         :event {:input (on-input modify! coord),
+                 :keydown (on-keydown modify! coord token on-command),
+                 :click (on-click modify! coord focus)},
+         :style (merge
+                 {}
+                 {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
+                 (if (or (has-blank? token) (zero? (count token)))
+                   {:background-color (hsl 0 0 100 0.16)})
+                 (if head? {:color (hsl 40 80 60 0.9)}))})))))

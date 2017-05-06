@@ -3,15 +3,11 @@
   :asset-paths #{"assets/"}
   :resource-paths #{"src/"}
   :dependencies '[[org.clojure/clojure       "1.8.0"       :scope "provided"]
-                  [org.clojure/clojurescript "1.9.473"     :scope "provided"]
+                  [org.clojure/clojurescript "1.9.521"     :scope "provided"]
                   [adzerk/boot-cljs          "1.7.228-1"   :scope "provided"]
                   [adzerk/boot-reload        "0.4.13"      :scope "provided"]
-                  [cirru/boot-stack-server   "0.1.30"      :scope "provided"]
-                  [andare                    "0.5.0"       :scope "provided"]
-                  [cumulo/shallow-diff       "0.1.3"       :scope "provided"]
-                  [fipp                      "0.6.9"       :scope "provided"]
                   [mvc-works/hsl             "0.1.2"]
-                  [respo                     "0.3.39"]])
+                  [respo                     "0.4.2"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
          '[adzerk.boot-reload :refer [reload]])
@@ -28,11 +24,11 @@
   (comp
     (cljs :optimizations :advanced
           :compiler-options {:language-in :ecmascript5
-                             :pseudo-names true
-                             :static-fns true
-                             :parallel-build true
-                             :optimize-constants true
-                             :source-map true})
+                             ; :pseudo-names true
+                             ; :static-fns true
+                             ; :optimize-constants true
+                             ; :source-map true
+                             :parallel-build true})
     (target :no-clean true)))
 
 (def +version+ "0.1.20")

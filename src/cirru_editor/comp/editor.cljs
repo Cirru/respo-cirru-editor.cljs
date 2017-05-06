@@ -34,23 +34,25 @@
 (defn handle-update [snapshot on-update!]
   (fn [op op-data dispatch!] (on-update! (updater snapshot op op-data) dispatch!)))
 
-(defn render [snapshot on-update! on-command]
-  (fn [state mutate!]
-    (div
-     {:style style-editor}
-     (style {:attrs {:innerHTML common-styles}})
-     (div
-      {:style style-box}
-      (comp-expression
-       (:tree snapshot)
-       (handle-update snapshot on-update!)
-       []
-       0
-       false
-       (:focus snapshot)
-       (handle-command on-command snapshot)
-       true
-       false))
-     (comment comp-debug snapshot {:bottom 0, :left 0}))))
-
-(def comp-editor (create-comp :editor render))
+(def comp-editor
+  (create-comp
+   :editor
+   (fn [states snapshot on-update! on-command]
+     (fn [cursor]
+       (div
+        {:style style-editor}
+        (style {:attrs {:innerHTML common-styles}})
+        (div
+         {:style style-box}
+         (comp-expression
+          states
+          (:tree snapshot)
+          (handle-update snapshot on-update!)
+          []
+          0
+          false
+          (:focus snapshot)
+          (handle-command on-command snapshot)
+          true
+          false))
+        (comment comp-debug snapshot {:bottom 0, :left 0}))))))

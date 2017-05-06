@@ -8,15 +8,17 @@
 
 (defn on-update! [snapshot dispatch!] (dispatch! :save snapshot))
 
-(defn render [store]
-  (fn [state mutate!]
-    (div
-     {:style {:position "absolute",
-              :width "100%",
-              :height "100%",
-              :display "flex",
-              :flex-direction "column",
-              :background-color (hsl 0 0 0)}}
-     (comp-editor store on-update! on-command))))
-
-(def comp-container (create-comp :container render))
+(def comp-container
+  (create-comp
+   :container
+   (fn [store]
+     (fn [state mutate!]
+       (let [states (:states store)]
+         (div
+          {:style {:position "absolute",
+                   :width "100%",
+                   :height "100%",
+                   :display "flex",
+                   :flex-direction "column",
+                   :background-color (hsl 0 0 0)}}
+          (comp-editor states store on-update! on-command)))))))
