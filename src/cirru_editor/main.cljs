@@ -1,35 +1,39 @@
 
 (ns cirru-editor.main
-  (:require [respo.core :refer [render! clear-cache!]]
+  (:require [respo.core :refer [render! clear-cache! render-element falsify-stage!]]
             [respo.cursor :refer [mutate]]
             [cirru-editor.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
-            [cirru-editor.util.dom :refer [focus!]]))
+            [cirru-editor.util.dom :refer [focus!]]
+            (cirru-editor.schema :as schema)))
 
-(defonce store-ref
-  (atom {:tree [["demo" ["cute" ["cute"]] "demo"] ["a"]], :focus [], :clipboard []}))
+(defonce *store (atom schema/store))
 
-(def touched-ref (atom false))
+(def *touched (atom false))
 
 (defn dispatch! [op op-data]
   (comment println "dispatch:" op op-data)
   (case op
-    :save (reset! store-ref op-data)
-    :states (swap! store-ref update :states (mutate op-data))
+    :save (reset! *store op-data)
+    :states (swap! *store update :states (mutate op-data))
     nil)
-  (reset! touched-ref true))
+  (reset! *touched true))
+
+(def mount-target (.querySelector js/document ".app"))
 
 (defn render-app! []
-  (let [target (.querySelector js/document "#app")]
-    (render! (comp-container @store-ref) target dispatch!)
-    (if @touched-ref (do (focus!) (reset! touched-ref false)))))
+  (render! (comp-container @*store) mount-target dispatch!)
+  (if @*touched (do (focus!) (reset! *touched false))))
 
-(defn on-jsload! [] (clear-cache!) (render-app!) (println "code updated."))
+(defn reload! [] (clear-cache!) (render-app!) (println "code updated."))
 
-(defn -main []
-  (enable-console-print!)
+(def server-rendered? (some? (.querySelector js/document "meta#server-rendered")))
+
+(defn main! []
+  (if server-rendered?
+    (falsify-stage! mount-target (render-element (comp-container @*store)) dispatch!))
   (render-app!)
-  (add-watch store-ref :changes render-app!)
+  (add-watch *store :changes render-app!)
   (println "app started!"))
 
-(set! js/window.onload -main)
+(set! js/window.onload main!)

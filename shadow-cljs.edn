@@ -1,0 +1,15 @@
+
+{:source-paths ["src"]
+ :dependencies [[mvc-works/hsl "0.1.2"]
+                [respo/ui "0.1.9"]
+                [respo "0.4.5"]]
+ :builds {:dev {:output-dir "target/browser"
+                :asset-path "/browser"
+                :target :browser
+                :modules {:main {:entries [cirru-editor.main]}}
+                :devtools {:after-load cirru-editor.main/reload!}}
+          :npm {:output-dir "target"
+                :target :npm-module}
+          :release {:entries [cirru-editor.main]
+                    :target :npm-module
+                    :output-dir "target/release/"}}}

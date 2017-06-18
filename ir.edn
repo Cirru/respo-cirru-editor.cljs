@@ -1,4 +1,5 @@
 {:package "cirru-editor",
+ :root {:ns "main", :def "main!"},
  :files {"comp.expression" {:ns ["ns"
                                  "cirru-editor.comp.expression"
                                  [":require"
@@ -291,6 +292,14 @@
                                 "key-f" ["def" "key-f" "70"],
                                 "left" ["def" "left" "37"]},
                          :procs []},
+         "schema" {:ns ["ns" "cirru-editor.schema"],
+                   :defs {"store" ["def"
+                                   "store"
+                                   ["{}"
+                                    [":tree" ["[]" ["[]" "|demo" ["[]" "|cute" ["[]" "|cute"]] "|demo"] ["[]" "|a"]]]
+                                    [":focus" ["[]"]]
+                                    [":clipboard" ["[]"]]]]},
+                   :procs []},
          "comp.editor" {:ns ["ns"
                              "cirru-editor.comp.editor"
                              [":require"
@@ -413,50 +422,47 @@
          "main" {:ns ["ns"
                       "cirru-editor.main"
                       [":require"
-                       ["[]" "respo.core" ":refer" ["[]" "render!" "clear-cache!"]]
+                       ["[]" "respo.core" ":refer" ["[]" "render!" "clear-cache!" "render-element" "falsify-stage!"]]
                        ["[]" "respo.cursor" ":refer" ["[]" "mutate"]]
                        ["[]" "cirru-editor.comp.container" ":refer" ["[]" "comp-container"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
-                       ["[]" "cirru-editor.util.dom" ":refer" ["[]" "focus!"]]]],
+                       ["[]" "cirru-editor.util.dom" ":refer" ["[]" "focus!"]]
+                       ["cirru-editor.schema" ":as" "schema"]]],
                  :defs {"dispatch!" ["defn"
                                      "dispatch!"
                                      ["op" "op-data"]
                                      ["--" "println" "|dispatch:" "op" "op-data"]
                                      ["case"
                                       "op"
-                                      [":save" ["reset!" "store-ref" "op-data"]]
-                                      [":states" ["swap!" "store-ref" "update" ":states" ["mutate" "op-data"]]]
+                                      [":save" ["reset!" "*store" "op-data"]]
+                                      [":states" ["swap!" "*store" "update" ":states" ["mutate" "op-data"]]]
                                       "nil"]
-                                     ["reset!" "touched-ref" "true"]],
-                        "on-jsload!" ["defn"
-                                      "on-jsload!"
-                                      []
-                                      ["clear-cache!"]
-                                      ["render-app!"]
-                                      ["println" "|code updated."]],
+                                     ["reset!" "*touched" "true"]],
+                        "reload!" ["defn" "reload!" [] ["clear-cache!"] ["render-app!"] ["println" "|code updated."]],
                         "render-app!" ["defn"
                                        "render-app!"
                                        []
-                                       ["let"
-                                        [["target" [".querySelector" "js/document" "|#app"]]]
-                                        ["render!" ["comp-container" "@store-ref"] "target" "dispatch!"]
-                                        ["if" "@touched-ref" ["do" ["focus!"] ["reset!" "touched-ref" "false"]]]]],
-                        "-main" ["defn"
-                                 "-main"
+                                       ["render!" ["comp-container" "@*store"] "mount-target" "dispatch!"]
+                                       ["if" "@*touched" ["do" ["focus!"] ["reset!" "*touched" "false"]]]],
+                        "main!" ["defn"
+                                 "main!"
                                  []
-                                 ["enable-console-print!"]
+                                 ["if"
+                                  "server-rendered?"
+                                  ["falsify-stage!"
+                                   "mount-target"
+                                   ["render-element" ["comp-container" "@*store"]]
+                                   "dispatch!"]]
                                  ["render-app!"]
-                                 ["add-watch" "store-ref" ":changes" "render-app!"]
+                                 ["add-watch" "*store" ":changes" "render-app!"]
                                  ["println" "|app started!"]],
-                        "store-ref" ["defonce"
-                                     "store-ref"
-                                     ["atom"
-                                      ["{}"
-                                       [":tree" ["[]" ["[]" "|demo" ["[]" "|cute" ["[]" "|cute"]] "|demo"] ["[]" "|a"]]]
-                                       [":focus" ["[]"]]
-                                       [":clipboard" ["[]"]]]]],
-                        "touched-ref" ["def" "touched-ref" ["atom" "false"]]},
-                 :procs [["set!" "js/window.onload" "-main"]]},
+                        "*store" ["defonce" "*store" ["atom" "schema/store"]],
+                        "*touched" ["def" "*touched" ["atom" "false"]],
+                        "mount-target" ["def" "mount-target" [".querySelector" "js/document" "|.app"]],
+                        "server-rendered?" ["def"
+                                            "server-rendered?"
+                                            ["some?" [".querySelector" "js/document" "|meta#server-rendered"]]]},
+                 :procs [["set!" "js/window.onload" "main!"]]},
          "comp.token" {:ns ["ns"
                             "cirru-editor.comp.token"
                             [":require"
@@ -584,6 +590,90 @@
                                                  ["modify!" ":command-paste" "coord" "dispatch!"]]]
                                                [":else" ["if" "command?" ["on-command" "e" "dispatch!"] "nil"]]]]]]},
                        :procs []},
+         "render" {:ns ["ns"
+                        "cirru-editor.render"
+                        [":require"
+                         ["[]"
+                          "respo.alias"
+                          ":refer"
+                          ["[]" "html" "head" "title" "script" "style" "meta'" "div" "link" "body"]]
+                         ["[]" "respo.render.html" ":refer" ["[]" "make-html" "make-string"]]
+                         ["[]" "cirru-editor.comp.container" ":refer" ["[]" "comp-container"]]
+                         ["[]" "|fs" ":refer" ["[]" "readFileSync" "writeFileSync"]]
+                         ["cirru-editor.schema" ":as" "schema"]]],
+                   :defs {"main!" ["defn"
+                                   "main!"
+                                   []
+                                   ["if"
+                                    ["=" "js/process.env.env" "|dev"]
+                                    ["spit" "|target/index.html" ["generate-empty-html"]]
+                                    ["spit" "|dist/index.html" ["generate-html"]]]],
+                          "spit" ["defn"
+                                  "spit"
+                                  ["file-name" "content"]
+                                  ["writeFileSync" "file-name" "content"]
+                                  ["println" "|Wrote to:" "file-name"]],
+                          "generate-empty-html" ["defn"
+                                                 "generate-empty-html"
+                                                 []
+                                                 ["html-dsl"
+                                                  ["{}"
+                                                   [":build?" "false"]
+                                                   [":main" "|/main.js"]
+                                                   [":cljs-main" "|/browser/main.js"]]
+                                                  "|"]],
+                          "generate-html" ["defn"
+                                           "generate-html"
+                                           []
+                                           ["let"
+                                            [["tree" ["comp-container" "schema/store"]]
+                                             ["html-content" ["make-string" "tree"]]
+                                             ["resources"
+                                              ["let"
+                                               [["manifest" ["js/JSON.parse" ["slurp" "|dist/manifest.json"]]]]
+                                               ["{}"
+                                                [":build?" "true"]
+                                                [":css" ["aget" "manifest" "|main.css"]]
+                                                [":main" ["aget" "manifest" "|main.js"]]
+                                                [":vendor" ["aget" "manifest" "|vendor.js"]]]]]]
+                                            ["html-dsl" "resources" "html-content"]]],
+                          "slurp" ["defn" "slurp" ["x"] ["readFileSync" "x" "|utf8"]],
+                          "html-dsl" ["defn"
+                                      "html-dsl"
+                                      ["resources" "html-content"]
+                                      ["make-html"
+                                       ["html"
+                                        ["{}"]
+                                        ["head"
+                                         ["{}"]
+                                         ["title" ["{}" [":innerHTML" "|Cirru Editor"]]]
+                                         ["link" ["{}" [":rel" "|icon"] [":type" "|image/png"] [":href" "icon-url"]]]
+                                         ["link" ["{}" [":rel" "|manifest"] [":href" "|manifest.json"]]]
+                                         ["meta'" ["{}" [":charset" "|utf8"]]]
+                                         ["meta'"
+                                          ["{}"
+                                           [":name" "|viewport"]
+                                           [":content" "|width=device-width, initial-scale=1"]]]
+                                         ["if"
+                                          [":build?" "resources"]
+                                          ["meta'" ["{}" [":id" "|server-rendered"] [":type" "|text/edn"]]]]
+                                         ["if"
+                                          ["contains?" "resources" ":css"]
+                                          ["link"
+                                           ["{}"
+                                            [":rel" "|stylesheet"]
+                                            [":type" "|text/css"]
+                                            [":href" [":css" "resources"]]]]]]
+                                        ["body"
+                                         ["{}"]
+                                         ["div" ["{}" [":class-name" "|app"] [":innerHTML" "html-content"]]]
+                                         ["if"
+                                          [":build?" "resources"]
+                                          ["script" ["{}" [":src" [":vendor" "resources"]]]]
+                                          ["script" ["{}" [":src" [":cljs-main" "resources"]]]]]
+                                         ["script" ["{}" [":src" [":main" "resources"]]]]]]]],
+                          "icon-url" ["def" "icon-url" "|http://repo.cirru.org/logo.cirru.org/cirru-400x400.png"]},
+                   :procs [["main!"]]},
          "modifier.tree" {:ns ["ns" "cirru-editor.modifier.tree"],
                           :defs {"before-token" ["defn"
                                                  "before-token"
@@ -1072,7 +1162,7 @@
                                  "updater" ["defn"
                                             "updater"
                                             ["snapshot" "op" "op-data"]
-                                            ["println" ":update-state" "op" "op-data"]
+                                            ["--" "println" ":update-state" "op" "op-data"]
                                             ["let"
                                              [["handler"
                                                ["case"

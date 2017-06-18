@@ -46,7 +46,7 @@ Take `src/cirru_editor/main.cljs` for example.
 
 ### Develop
 
-https://github.com/mvc-works/boot-workflow
+https://github.com/mvc-works/stack-workflow
 
 ### License
 

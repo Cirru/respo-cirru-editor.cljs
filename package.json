@@ -1,0 +1,43 @@
+{
+  "name": "respo-cirru-editor",
+  "version": "0.1.0",
+  "description": "Stack Workflow",
+  "main": "index.js",
+  "scripts": {
+    "tiye": "rsync -r dist/ repo.tiye.me:repo/Cirru/respo-cirru-editor/",
+    "cljs-release": "shadow-cljs -b release --release",
+    "cljs-browser": "shadow-cljs -b dev --dev",
+    "cljs-once": "shadow-cljs -b npm --once",
+    "cljs": "shadow-cljs -b npm --dev",
+    "html-dev": "env=dev node target/cirru_editor.render.js",
+    "html": "node target/cirru_editor.render.js",
+    "hmr": "webpack-dev-server --config webpack.dev.coffee --hot-only",
+    "webpack": "webpack --config webpack.release.coffee --hide-modules --progress",
+    "dev": "yarn cljs-once && yarn html-dev && yarn hmr",
+    "del": "rm -rf dist/*",
+    "serve": "http-server dist",
+    "build": "yarn del && yarn cljs-release && yarn webpack && yarn cljs-once && yarn html && yarn serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Cirru/respo-cirru-editor.git"
+  },
+  "author": "jiyinyiyong",
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-script": "^1.12.6",
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^0.11.2",
+    "http-server": "^0.10.0",
+    "respo-ui": "^0.1.2",
+    "shadow-cljs": "^0.9.8",
+    "source-map-loader": "^0.2.1",
+    "style-loader": "^0.18.2",
+    "uglifyjs-webpack-plugin": "^0.4.3",
+    "url-loader": "^0.5.9",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5",
+    "webpack-manifest-plugin": "^1.1.0"
+  }
+}
