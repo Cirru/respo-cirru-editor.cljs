@@ -1,7 +1,8 @@
 
 (ns cirru-editor.comp.token
+  (:require-macros (respo.macros :refer (defcomp)))
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [create-comp div input]]
+            [respo.alias :refer [div input]]
             [cirru-editor.util.measure :refer [text-width]]
             [cirru-editor.util.detect :refer [has-blank?]]
             [cirru-editor.util.keycode :as keycode]))
@@ -61,21 +62,19 @@
           (do (.preventDefault event) (modify! :command-paste coord dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
 
-(def comp-token
-  (create-comp
-   :token
-   (fn [token modify! coord focus on-command head?]
-     (fn [state mutate!]
-       (input
-        {:attrs (merge
-                 {:value token, :spellcheck false, :class-name "cirru-token"}
-                 (if (= coord focus) {:id "editor-focused"})),
-         :event {:input (on-input modify! coord),
-                 :keydown (on-keydown modify! coord token on-command),
-                 :click (on-click modify! coord focus)},
-         :style (merge
-                 {}
-                 {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
-                 (if (or (has-blank? token) (zero? (count token)))
-                   {:background-color (hsl 0 0 100 0.16)})
-                 (if head? {:color (hsl 40 80 60 0.9)}))})))))
+(defcomp
+ comp-token
+ (token modify! coord focus on-command head?)
+ (input
+  {:value token,
+   :spellcheck false,
+   :class-name (if (= coord focus) "editor-focused cirru-token" "cirru-token"),
+   :event {:input (on-input modify! coord),
+           :keydown (on-keydown modify! coord token on-command),
+           :click (on-click modify! coord focus)},
+   :style (merge
+           {}
+           {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
+           (if (or (has-blank? token) (zero? (count token)))
+             {:background-color (hsl 0 0 100 0.16)})
+           (if head? {:color (hsl 40 80 60 0.9)}))}))

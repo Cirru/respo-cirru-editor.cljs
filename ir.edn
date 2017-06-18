@@ -2,9 +2,10 @@
  :root {:ns "main", :def "main!"},
  :files {"comp.expression" {:ns ["ns"
                                  "cirru-editor.comp.expression"
+                                 [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
                                  [":require"
                                   ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                                  ["[]" "respo.alias" ":refer" ["[]" "create-comp" "div"]]
+                                  ["[]" "respo.alias" ":refer" ["[]" "div"]]
                                   ["[]" "respo.cursor" ":refer" ["[]" "with-cursor"]]
                                   ["[]" "respo.comp.text" ":refer" ["[]" "comp-text"]]
                                   ["[]" "respo.comp.space" ":refer" ["[]" "comp-space"]]
@@ -113,149 +114,130 @@
                                                     [["and" "command?" "shift?" ["=" "code" "keycode/key-f"]]
                                                      ["dispatch!" ":states" ["[]" "cursor" ["not" "state"]]]]
                                                     [":else" ["if" "command?" ["on-command" "e" "dispatch!"] "nil"]]]]]],
-                                   "comp-expression" ["def"
+                                   "comp-expression" ["defcomp"
                                                       "comp-expression"
-                                                      ["create-comp"
-                                                       ":expression"
-                                                       ["fn"
-                                                        ["states"
-                                                         "expression"
-                                                         "modify!"
-                                                         "coord"
-                                                         "level"
-                                                         "tail?"
-                                                         "focus"
-                                                         "on-command"
-                                                         "head?"
-                                                         "after-expression?"]
-                                                        ["fn"
-                                                         ["cursor"]
-                                                         ["let"
-                                                          [["exp-size" ["count" "expression"]]
-                                                           ["state" ["or" [":data" "states"] "false"]]]
+                                                      ["states"
+                                                       "expression"
+                                                       "modify!"
+                                                       "coord"
+                                                       "level"
+                                                       "tail?"
+                                                       "focus"
+                                                       "on-command"
+                                                       "head?"
+                                                       "after-expression?"]
+                                                      ["let"
+                                                       [["exp-size" ["count" "expression"]]
+                                                        ["state" ["or" [":data" "states"] "false"]]]
+                                                       ["if"
+                                                        "state"
+                                                        ["div"
+                                                         ["{}"
+                                                          [":style" "style-folded"]
+                                                          [":event"
+                                                           ["{}"
+                                                            [":click" ["on-unfold" "cursor" "state"]]
+                                                            [":keydown"
+                                                             ["on-keydown"
+                                                              "cursor"
+                                                              "state"
+                                                              "modify!"
+                                                              "coord"
+                                                              "on-command"]]]]]
+                                                         ["comp-text" ["first" "expression"] "nil"]]
+                                                        ["div"
+                                                         ["{}"
+                                                          [":tab-index" "0"]
+                                                          [":class-name"
+                                                           ["if"
+                                                            ["=" "coord" "focus"]
+                                                            "|editor-focused cirru-expression"
+                                                            "|cirru-expression"]]
+                                                          [":style"
+                                                           ["merge"
+                                                            ["{}"]
+                                                            ["if"
+                                                             ["and"
+                                                              ["shallow?" "expression"]
+                                                              ["not" "after-expression?"]
+                                                              ["not" "tail?"]
+                                                              ["pos?" "level"]
+                                                              ["<" ["count" "expression"] "5"]]
+                                                             "style-inline"]
+                                                            ["if"
+                                                             ["and" "tail?" ["not" "head?"] ["pos?" "level"]]
+                                                             "style-tail"]
+                                                            ["if"
+                                                             ["=" "coord" "focus"]
+                                                             ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]]]
+                                                          [":event"
+                                                           ["{}"
+                                                            [":click" ["on-click" "modify!" "coord" "focus"]]
+                                                            [":keydown"
+                                                             ["on-keydown"
+                                                              "cursor"
+                                                              "state"
+                                                              "modify!"
+                                                              "coord"
+                                                              "on-command"]]]]]
+                                                         ["loop"
+                                                          ["[]"
+                                                           "acc"
+                                                           ["[]"]
+                                                           "idx"
+                                                           "0"
+                                                           "expr"
+                                                           "expression"
+                                                           "child-after-expression?"
+                                                           "false"]
                                                           ["if"
-                                                           "state"
-                                                           ["div"
-                                                            ["{}"
-                                                             [":style" "style-folded"]
-                                                             [":event"
-                                                              ["{}"
-                                                               [":click" ["on-unfold" "cursor" "state"]]
-                                                               [":keydown"
-                                                                ["on-keydown"
-                                                                 "cursor"
-                                                                 "state"
-                                                                 "modify!"
-                                                                 "coord"
-                                                                 "on-command"]]]]]
-                                                            ["comp-text" ["first" "expression"] "nil"]]
-                                                           ["div"
-                                                            ["{}"
-                                                             [":style"
-                                                              ["merge"
-                                                               ["{}"]
-                                                               ["if"
-                                                                ["and"
-                                                                 ["shallow?" "expression"]
-                                                                 ["not" "after-expression?"]
-                                                                 ["not" "tail?"]
-                                                                 ["pos?" "level"]
-                                                                 ["<" ["count" "expression"] "5"]]
-                                                                ["{}"
-                                                                 [":display" "|inline-block"]
-                                                                 [":border-width" "|0 0 1px 0"]
-                                                                 [":padding-left" "17"]
-                                                                 [":padding-right" "15"]
-                                                                 [":padding-bottom" "2"]
-                                                                 [":margin-left" "4"]
-                                                                 [":margin-right" "4"]
-                                                                 [":text-align" "|center"]
-                                                                 [":background-color" ["hsl" "200" "80" "80" "0"]]]]
-                                                               ["if"
-                                                                ["and" "tail?" ["not" "head?"] ["pos?" "level"]]
-                                                                ["{}"
-                                                                 [":display" "|inline-block"]
-                                                                 [":border-width" "|0 0 0 1px"]
-                                                                 [":background-color" ["hsl" "0" "80" "80" "0"]]]]
-                                                               ["if"
-                                                                ["=" "coord" "focus"]
-                                                                ["{}" [":border-color" ["hsl" "0" "0" "100" "0.6"]]]]]]
-                                                             [":attrs"
-                                                              ["merge"
-                                                               ["{}"
-                                                                [":tab-index" "0"]
-                                                                [":class-name" "|cirru-expression"]]
-                                                               ["if"
-                                                                ["=" "coord" "focus"]
-                                                                ["{}" [":id" "|editor-focused"]]]]]
-                                                             [":event"
-                                                              ["{}"
-                                                               [":click" ["on-click" "modify!" "coord" "focus"]]
-                                                               [":keydown"
-                                                                ["on-keydown"
-                                                                 "cursor"
-                                                                 "state"
-                                                                 "modify!"
-                                                                 "coord"
-                                                                 "on-command"]]]]]
-                                                            ["loop"
-                                                             ["[]"
-                                                              "acc"
-                                                              ["[]"]
-                                                              "idx"
-                                                              "0"
-                                                              "expr"
-                                                              "expression"
-                                                              "child-after-expression?"
-                                                              "false"]
-                                                             ["if"
-                                                              ["empty?" "expr"]
-                                                              "acc"
-                                                              ["let"
-                                                               [["item" ["first" "expr"]]
-                                                                ["pair"
-                                                                 ["[]"
-                                                                  "idx"
-                                                                  ["let"
-                                                                   [["child-coord" ["conj" "coord" "idx"]]
-                                                                    ["child-focus"
-                                                                     ["if"
-                                                                      ["coord-contains?" "focus" "child-coord"]
-                                                                      "focus"
-                                                                      "nil"]]
-                                                                    ["child-head?" ["zero?" "idx"]]]
-                                                                   ["if"
-                                                                    ["string?" "item"]
-                                                                    ["comp-token"
-                                                                     "item"
-                                                                     "modify!"
-                                                                     "child-coord"
-                                                                     "child-focus"
-                                                                     "on-command"
-                                                                     "child-head?"]
-                                                                    ["let"
-                                                                     [["child-states" ["get" "states" "idx"]]]
-                                                                     ["with-cursor"
-                                                                      "idx"
-                                                                      ["comp-expression"
-                                                                       "child-states"
-                                                                       "item"
-                                                                       "modify!"
-                                                                       "child-coord"
-                                                                       ["inc" "level"]
-                                                                       ["and"
-                                                                        ["or" "after-expression?" ["not" "tail?"]]
-                                                                        ["=" ["dec" "exp-size"] "idx"]]
-                                                                       "child-focus"
-                                                                       "on-command"
-                                                                       "child-head?"
-                                                                       "child-after-expression?"]]]]]]]
-                                                                ["next-acc" ["conj" "acc" "pair"]]]
-                                                               ["recur"
-                                                                "next-acc"
-                                                                ["inc" "idx"]
-                                                                ["rest" "expr"]
-                                                                ["vector?" "item"]]]]]]]]]]]],
+                                                           ["empty?" "expr"]
+                                                           "acc"
+                                                           ["let"
+                                                            [["item" ["first" "expr"]]
+                                                             ["pair"
+                                                              ["[]"
+                                                               "idx"
+                                                               ["let"
+                                                                [["child-coord" ["conj" "coord" "idx"]]
+                                                                 ["child-focus"
+                                                                  ["if"
+                                                                   ["coord-contains?" "focus" "child-coord"]
+                                                                   "focus"
+                                                                   "nil"]]
+                                                                 ["child-head?" ["zero?" "idx"]]]
+                                                                ["if"
+                                                                 ["string?" "item"]
+                                                                 ["comp-token"
+                                                                  "item"
+                                                                  "modify!"
+                                                                  "child-coord"
+                                                                  "child-focus"
+                                                                  "on-command"
+                                                                  "child-head?"]
+                                                                 ["let"
+                                                                  [["child-states" ["get" "states" "idx"]]]
+                                                                  ["with-cursor"
+                                                                   "idx"
+                                                                   ["comp-expression"
+                                                                    "child-states"
+                                                                    "item"
+                                                                    "modify!"
+                                                                    "child-coord"
+                                                                    ["inc" "level"]
+                                                                    ["and"
+                                                                     ["or" "after-expression?" ["not" "tail?"]]
+                                                                     ["=" ["dec" "exp-size"] "idx"]]
+                                                                    "child-focus"
+                                                                    "on-command"
+                                                                    "child-head?"
+                                                                    "child-after-expression?"]]]]]]]
+                                                             ["next-acc" ["conj" "acc" "pair"]]]
+                                                            ["recur"
+                                                             "next-acc"
+                                                             ["inc" "idx"]
+                                                             ["rest" "expr"]
+                                                             ["vector?" "item"]]]]]]]]],
                                    "style-expression" ["def"
                                                        "style-expression"
                                                        ["{}"
@@ -274,7 +256,25 @@
                                                         [":min-height" "|26px"]
                                                         [":min-width" "|16px"]
                                                         [":vertical-align" "|top"]
-                                                        [":box-sizing" "|border-box"]]]},
+                                                        [":box-sizing" "|border-box"]]],
+                                   "style-inline" ["def"
+                                                   "style-inline"
+                                                   ["{}"
+                                                    [":display" "|inline-block"]
+                                                    [":border-width" "|0 0 1px 0"]
+                                                    [":padding-left" "17"]
+                                                    [":padding-right" "15"]
+                                                    [":padding-bottom" "2"]
+                                                    [":margin-left" "4"]
+                                                    [":margin-right" "4"]
+                                                    [":text-align" "|center"]
+                                                    [":background-color" ["hsl" "200" "80" "80" "0"]]]],
+                                   "style-tail" ["def"
+                                                 "style-tail"
+                                                 ["{}"
+                                                  [":display" "|inline-block"]
+                                                  [":border-width" "|0 0 0 1px"]
+                                                  [":background-color" ["hsl" "0" "80" "80" "0"]]]]},
                             :procs []},
          "util.keycode" {:ns ["ns" "cirru-editor.util.keycode"],
                          :defs {"space" ["def" "space" "32"],
@@ -302,9 +302,10 @@
                    :procs []},
          "comp.editor" {:ns ["ns"
                              "cirru-editor.comp.editor"
+                             [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
                              [":require"
                               ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                              ["[]" "respo.alias" ":refer" ["[]" "create-comp" "div" "style"]]
+                              ["[]" "respo.alias" ":refer" ["[]" "div" "style"]]
                               ["[]" "respo.comp.debug" ":refer" ["[]" "comp-debug"]]
                               ["[]" "respo.comp.space" ":refer" ["[]" "comp-space"]]
                               ["[]" "respo.comp.text" ":refer" ["[]" "comp-text"]]
@@ -312,31 +313,26 @@
                               ["[]" "cirru-editor.comp.expression" ":refer" ["[]" "comp-expression" "style-expression"]]
                               ["[]" "cirru-editor.comp.token" ":refer" ["[]" "style-token"]]
                               ["[]" "respo.render.html" ":refer" ["[]" "style->string"]]]],
-                        :defs {"comp-editor" ["def"
+                        :defs {"comp-editor" ["defcomp"
                                               "comp-editor"
-                                              ["create-comp"
-                                               ":editor"
-                                               ["fn"
-                                                ["states" "snapshot" "on-update!" "on-command"]
-                                                ["fn"
-                                                 ["cursor"]
-                                                 ["div"
-                                                  ["{}" [":style" "style-editor"]]
-                                                  ["style" ["{}" [":attrs" ["{}" [":innerHTML" "common-styles"]]]]]
-                                                  ["div"
-                                                   ["{}" [":style" "style-box"]]
-                                                   ["comp-expression"
-                                                    "states"
-                                                    [":tree" "snapshot"]
-                                                    ["handle-update" "snapshot" "on-update!"]
-                                                    ["[]"]
-                                                    "0"
-                                                    "false"
-                                                    [":focus" "snapshot"]
-                                                    ["handle-command" "on-command" "snapshot"]
-                                                    "true"
-                                                    "false"]]
-                                                  ["--" "comp-debug" "snapshot" ["{}" [":bottom" "0"] [":left" "0"]]]]]]]],
+                                              ["states" "snapshot" "on-update!" "on-command"]
+                                              ["div"
+                                               ["{}" [":style" "style-editor"]]
+                                               ["style" ["{}" [":innerHTML" "common-styles"]]]
+                                               ["div"
+                                                ["{}" [":style" "style-box"]]
+                                                ["comp-expression"
+                                                 "states"
+                                                 [":tree" "snapshot"]
+                                                 ["handle-update" "snapshot" "on-update!"]
+                                                 ["[]"]
+                                                 "0"
+                                                 "false"
+                                                 [":focus" "snapshot"]
+                                                 ["handle-command" "on-command" "snapshot"]
+                                                 "true"
+                                                 "false"]]
+                                               ["--" "comp-debug" "snapshot" ["{}" [":bottom" "0"] [":left" "0"]]]]],
                                "handle-command" ["defn"
                                                  "handle-command"
                                                  ["on-command" "snapshot"]
@@ -370,35 +366,31 @@
                         :procs []},
          "comp.container" {:ns ["ns"
                                 "cirru-editor.comp.container"
+                                [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
                                 [":require"
                                  ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                                 ["[]" "respo.alias" ":refer" ["[]" "create-comp" "div" "span"]]
+                                 ["[]" "respo.alias" ":refer" ["[]" "div" "span"]]
                                  ["[]" "cirru-editor.comp.editor" ":refer" ["[]" "comp-editor"]]]],
                            :defs {"on-command" ["defn"
                                                 "on-command"
                                                 ["snapshot" "dispatch!" "e"]
                                                 ["println" "|command" "e"]],
-                                  "comp-container" ["def"
+                                  "comp-container" ["defcomp"
                                                     "comp-container"
-                                                    ["create-comp"
-                                                     ":container"
-                                                     ["fn"
-                                                      ["store"]
-                                                      ["fn"
-                                                       ["state" "mutate!"]
-                                                       ["let"
-                                                        [["states" [":states" "store"]]]
-                                                        ["div"
-                                                         ["{}"
-                                                          [":style"
-                                                           ["{}"
-                                                            [":position" "|absolute"]
-                                                            [":width" "|100%"]
-                                                            [":height" "|100%"]
-                                                            [":display" "|flex"]
-                                                            [":flex-direction" "|column"]
-                                                            [":background-color" ["hsl" "0" "0" "0"]]]]]
-                                                         ["comp-editor" "states" "store" "on-update!" "on-command"]]]]]]],
+                                                    ["store"]
+                                                    ["let"
+                                                     [["states" [":states" "store"]]]
+                                                     ["div"
+                                                      ["{}"
+                                                       [":style"
+                                                        ["{}"
+                                                         [":position" "|absolute"]
+                                                         [":width" "|100%"]
+                                                         [":height" "|100%"]
+                                                         [":display" "|flex"]
+                                                         [":flex-direction" "|column"]
+                                                         [":background-color" ["hsl" "0" "0" "0"]]]]]
+                                                      ["comp-editor" "states" "store" "on-update!" "on-command"]]]],
                                   "on-update!" ["defn"
                                                 "on-update!"
                                                 ["snapshot" "dispatch!"]
@@ -412,7 +404,7 @@
                                        ["fn"
                                         ["timestap"]
                                         ["let"
-                                         [["editor-focus" [".querySelector" "js/document" "|#editor-focused"]]
+                                         [["editor-focus" [".querySelector" "js/document" "|.editor-focused"]]
                                           ["current-focus" [".-activeElement" "js/document"]]]
                                          ["if"
                                           ["some?" "editor-focus"]
@@ -465,9 +457,10 @@
                  :procs [["set!" "js/window.onload" "main!"]]},
          "comp.token" {:ns ["ns"
                             "cirru-editor.comp.token"
+                            [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
                             [":require"
                              ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                             ["[]" "respo.alias" ":refer" ["[]" "create-comp" "div" "input"]]
+                             ["[]" "respo.alias" ":refer" ["[]" "div" "input"]]
                              ["[]" "cirru-editor.util.measure" ":refer" ["[]" "text-width"]]
                              ["[]" "cirru-editor.util.detect" ":refer" ["[]" "has-blank?"]]
                              ["[]" "cirru-editor.util.keycode" ":as" "keycode"]]],
@@ -498,42 +491,32 @@
                                           ["fn"
                                            ["e" "dispatch!"]
                                            ["modify!" ":update-token" ["[]" "coord" [":value" "e"]] "dispatch!"]]],
-                              "comp-token" ["def"
+                              "comp-token" ["defcomp"
                                             "comp-token"
-                                            ["create-comp"
-                                             ":token"
-                                             ["fn"
-                                              ["token" "modify!" "coord" "focus" "on-command" "head?"]
-                                              ["fn"
-                                               ["state" "mutate!"]
-                                               ["input"
+                                            ["token" "modify!" "coord" "focus" "on-command" "head?"]
+                                            ["input"
+                                             ["{}"
+                                              [":value" "token"]
+                                              [":spellcheck" "false"]
+                                              [":class-name"
+                                               ["if" ["=" "coord" "focus"] "|editor-focused cirru-token" "|cirru-token"]]
+                                              [":event"
+                                               ["{}"
+                                                [":input" ["on-input" "modify!" "coord"]]
+                                                [":keydown" ["on-keydown" "modify!" "coord" "token" "on-command"]]
+                                                [":click" ["on-click" "modify!" "coord" "focus"]]]]
+                                              [":style"
+                                               ["merge"
+                                                ["{}"]
                                                 ["{}"
-                                                 [":attrs"
-                                                  ["merge"
-                                                   ["{}"
-                                                    [":value" "token"]
-                                                    [":spellcheck" "false"]
-                                                    [":class-name" "|cirru-token"]]
-                                                   ["if" ["=" "coord" "focus"] ["{}" [":id" "|editor-focused"]]]]]
-                                                 [":event"
-                                                  ["{}"
-                                                   [":input" ["on-input" "modify!" "coord"]]
-                                                   [":keydown" ["on-keydown" "modify!" "coord" "token" "on-command"]]
-                                                   [":click" ["on-click" "modify!" "coord" "focus"]]]]
-                                                 [":style"
-                                                  ["merge"
-                                                   ["{}"]
-                                                   ["{}"
-                                                    [":width"
-                                                     ["str"
-                                                      ["+"
-                                                       "8"
-                                                       ["text-width" "token" "15" [":font-family" "style-token"]]]
-                                                      "|px"]]]
-                                                   ["if"
-                                                    ["or" ["has-blank?" "token"] ["zero?" ["count" "token"]]]
-                                                    ["{}" [":background-color" ["hsl" "0" "0" "100" "0.16"]]]]
-                                                   ["if" "head?" ["{}" [":color" ["hsl" "40" "80" "60" "0.9"]]]]]]]]]]]],
+                                                 [":width"
+                                                  ["str"
+                                                   ["+" "8" ["text-width" "token" "15" [":font-family" "style-token"]]]
+                                                   "|px"]]]
+                                                ["if"
+                                                 ["or" ["has-blank?" "token"] ["zero?" ["count" "token"]]]
+                                                 ["{}" [":background-color" ["hsl" "0" "0" "100" "0.16"]]]]
+                                                ["if" "head?" ["{}" [":color" ["hsl" "40" "80" "60" "0.9"]]]]]]]]],
                               "on-keydown" ["defn"
                                             "on-keydown"
                                             ["modify!" "coord" "token" "on-command"]

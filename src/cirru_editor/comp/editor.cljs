@@ -1,7 +1,8 @@
 
 (ns cirru-editor.comp.editor
+  (:require-macros (respo.macros :refer (defcomp)))
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [create-comp div style]]
+            [respo.alias :refer [div style]]
             [respo.comp.debug :refer [comp-debug]]
             [respo.comp.space :refer [comp-space]]
             [respo.comp.text :refer [comp-text]]
@@ -34,25 +35,23 @@
 (defn handle-update [snapshot on-update!]
   (fn [op op-data dispatch!] (on-update! (updater snapshot op op-data) dispatch!)))
 
-(def comp-editor
-  (create-comp
-   :editor
-   (fn [states snapshot on-update! on-command]
-     (fn [cursor]
-       (div
-        {:style style-editor}
-        (style {:attrs {:innerHTML common-styles}})
-        (div
-         {:style style-box}
-         (comp-expression
-          states
-          (:tree snapshot)
-          (handle-update snapshot on-update!)
-          []
-          0
-          false
-          (:focus snapshot)
-          (handle-command on-command snapshot)
-          true
-          false))
-        (comment comp-debug snapshot {:bottom 0, :left 0}))))))
+(defcomp
+ comp-editor
+ (states snapshot on-update! on-command)
+ (div
+  {:style style-editor}
+  (style {:innerHTML common-styles})
+  (div
+   {:style style-box}
+   (comp-expression
+    states
+    (:tree snapshot)
+    (handle-update snapshot on-update!)
+    []
+    0
+    false
+    (:focus snapshot)
+    (handle-command on-command snapshot)
+    true
+    false))
+  (comment comp-debug snapshot {:bottom 0, :left 0})))

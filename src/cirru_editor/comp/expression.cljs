@@ -1,7 +1,8 @@
 
 (ns cirru-editor.comp.expression
+  (:require-macros (respo.macros :refer (defcomp)))
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [create-comp div]]
+            [respo.alias :refer [div]]
             [respo.cursor :refer [with-cursor]]
             [respo.comp.text :refer [comp-text]]
             [respo.comp.space :refer [comp-space]]
@@ -77,89 +78,78 @@
           (dispatch! :states [cursor (not state)])
         :else (if command? (on-command e dispatch!) nil)))))
 
-(def comp-expression
-  (create-comp
-   :expression
-   (fn [states
-        expression
-        modify!
-        coord
-        level
-        tail?
-        focus
-        on-command
-        head?
-        after-expression?]
-     (fn [cursor]
-       (let [exp-size (count expression), state (or (:data states) false)]
-         (if state
-           (div
-            {:style style-folded,
-             :event {:click (on-unfold cursor state),
-                     :keydown (on-keydown cursor state modify! coord on-command)}}
-            (comp-text (first expression) nil))
-           (div
-            {:style (merge
-                     {}
-                     (if (and (shallow? expression)
-                              (not after-expression?)
-                              (not tail?)
-                              (pos? level)
-                              (< (count expression) 5))
-                       {:display "inline-block",
-                        :border-width "0 0 1px 0",
-                        :padding-left 17,
-                        :padding-right 15,
-                        :padding-bottom 2,
-                        :margin-left 4,
-                        :margin-right 4,
-                        :text-align "center",
-                        :background-color (hsl 200 80 80 0)})
-                     (if (and tail? (not head?) (pos? level))
-                       {:display "inline-block",
-                        :border-width "0 0 0 1px",
-                        :background-color (hsl 0 80 80 0)})
-                     (if (= coord focus) {:border-color (hsl 0 0 100 0.6)})),
-             :attrs (merge
-                     {:tab-index 0, :class-name "cirru-expression"}
-                     (if (= coord focus) {:id "editor-focused"})),
-             :event {:click (on-click modify! coord focus),
-                     :keydown (on-keydown cursor state modify! coord on-command)}}
-            (loop [acc [], idx 0, expr expression, child-after-expression? false]
-              (if (empty? expr)
-                acc
-                (let [item (first expr)
-                      pair [idx
-                            (let [child-coord (conj coord idx)
-                                  child-focus (if (coord-contains? focus child-coord)
-                                                focus
-                                                nil)
-                                  child-head? (zero? idx)]
-                              (if (string? item)
-                                (comp-token
-                                 item
-                                 modify!
-                                 child-coord
-                                 child-focus
-                                 on-command
-                                 child-head?)
-                                (let [child-states (get states idx)]
-                                  (with-cursor
-                                   idx
-                                   (comp-expression
-                                    child-states
-                                    item
-                                    modify!
-                                    child-coord
-                                    (inc level)
-                                    (and (or after-expression? (not tail?))
-                                         (= (dec exp-size) idx))
-                                    child-focus
-                                    on-command
-                                    child-head?
-                                    child-after-expression?)))))]
-                      next-acc (conj acc pair)]
-                  (recur next-acc (inc idx) (rest expr) (vector? item))))))))))))
+(def style-inline
+  {:display "inline-block",
+   :border-width "0 0 1px 0",
+   :padding-left 17,
+   :padding-right 15,
+   :padding-bottom 2,
+   :margin-left 4,
+   :margin-right 4,
+   :text-align "center",
+   :background-color (hsl 200 80 80 0)})
+
+(def style-tail
+  {:display "inline-block", :border-width "0 0 0 1px", :background-color (hsl 0 80 80 0)})
+
+(defcomp
+ comp-expression
+ (states expression modify! coord level tail? focus on-command head? after-expression?)
+ (let [exp-size (count expression), state (or (:data states) false)]
+   (if state
+     (div
+      {:style style-folded,
+       :event {:click (on-unfold cursor state),
+               :keydown (on-keydown cursor state modify! coord on-command)}}
+      (comp-text (first expression) nil))
+     (div
+      {:tab-index 0,
+       :class-name (if (= coord focus) "editor-focused cirru-expression" "cirru-expression"),
+       :style (merge
+               {}
+               (if (and (shallow? expression)
+                        (not after-expression?)
+                        (not tail?)
+                        (pos? level)
+                        (< (count expression) 5))
+                 style-inline)
+               (if (and tail? (not head?) (pos? level)) style-tail)
+               (if (= coord focus) {:border-color (hsl 0 0 100 0.6)})),
+       :event {:click (on-click modify! coord focus),
+               :keydown (on-keydown cursor state modify! coord on-command)}}
+      (loop [acc [], idx 0, expr expression, child-after-expression? false]
+        (if (empty? expr)
+          acc
+          (let [item (first expr)
+                pair [idx
+                      (let [child-coord (conj coord idx)
+                            child-focus (if (coord-contains? focus child-coord) focus nil)
+                            child-head? (zero? idx)]
+                        (if (string? item)
+                          (comp-token
+                           item
+                           modify!
+                           child-coord
+                           child-focus
+                           on-command
+                           child-head?)
+                          (let [child-states (get states idx)]
+                            (with-cursor
+                             idx
+                             (comp-expression
+                              child-states
+                              item
+                              modify!
+                              child-coord
+                              (inc level)
+                              (and (or after-expression? (not tail?))
+                                   (= (dec exp-size) idx))
+                              child-focus
+                              on-command
+                              child-head?
+                              child-after-expression?)))))]
+                next-acc (conj acc pair)]
+            (recur next-acc (inc idx) (rest expr) (vector? item)))))))))
 
 (def style-expression
   {:border-style "solid",
