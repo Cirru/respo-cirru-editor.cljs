@@ -11,7 +11,7 @@ Demo http://repo.cirru.org/respo-cirru-editor/
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
 
 ```clojure
-[cirru/editor "0.2.0"]
+[cirru/editor "0.2.1"]
 ```
 
 Import `comp-editor` like this:

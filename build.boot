@@ -5,10 +5,7 @@
                   [respo/ui                  "0.1.9"]
                   [respo                     "0.4.5"]])
 
-(require '[adzerk.boot-cljs   :refer [cljs]]
-         '[adzerk.boot-reload :refer [reload]])
-
-(def +version+ "0.2.0")
+(def +version+ "0.2.1")
 
 (deftask build []
   (comp
