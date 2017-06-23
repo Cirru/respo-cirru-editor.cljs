@@ -2,14 +2,13 @@
  :root {:ns "main", :def "main!"},
  :files {"comp.expression" {:ns ["ns"
                                  "cirru-editor.comp.expression"
-                                 [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
+                                 [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "div" "span"]]]
                                  [":require"
                                   ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                                  ["[]" "respo.alias" ":refer" ["[]" "div"]]
+                                  ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                   ["[]" "respo.cursor" ":refer" ["[]" "with-cursor"]]
-                                  ["[]" "respo.comp.text" ":refer" ["[]" "comp-text"]]
-                                  ["[]" "respo.comp.space" ":refer" ["[]" "comp-space"]]
-                                  ["[]" "respo.comp.debug" ":refer" ["[]" "comp-debug"]]
+                                  ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
+                                  ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
                                   ["[]" "cirru-editor.comp.token" ":refer" ["[]" "comp-token"]]
                                   ["[]" "cirru-editor.util.detect" ":refer" ["[]" "coord-contains?" "shallow?" "deep?"]]
                                   ["[]" "cirru-editor.util.keycode" ":as" "keycode"]]],
@@ -144,7 +143,7 @@
                                                               "modify!"
                                                               "coord"
                                                               "on-command"]]]]]
-                                                         ["comp-text" ["first" "expression"] "nil"]]
+                                                         ["<>" "span" ["first" "expression"] "nil"]]
                                                         ["div"
                                                          ["{}"
                                                           [":tab-index" "0"]
@@ -302,13 +301,13 @@
                    :procs []},
          "comp.editor" {:ns ["ns"
                              "cirru-editor.comp.editor"
-                             [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
+                             [":require-macros"
+                              ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "div" "style" "span"]]]
                              [":require"
                               ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                              ["[]" "respo.alias" ":refer" ["[]" "div" "style"]]
-                              ["[]" "respo.comp.debug" ":refer" ["[]" "comp-debug"]]
-                              ["[]" "respo.comp.space" ":refer" ["[]" "comp-space"]]
-                              ["[]" "respo.comp.text" ":refer" ["[]" "comp-text"]]
+                              ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
+                              ["[]" "respo.comp.inspect" ":refer" ["[]" "comp-inspect"]]
+                              ["[]" "respo.comp.space" ":refer" ["[]" "=<"]]
                               ["[]" "cirru-editor.modifier.core" ":refer" ["[]" "updater"]]
                               ["[]" "cirru-editor.comp.expression" ":refer" ["[]" "comp-expression" "style-expression"]]
                               ["[]" "cirru-editor.comp.token" ":refer" ["[]" "style-token"]]
@@ -332,7 +331,7 @@
                                                  ["handle-command" "on-command" "snapshot"]
                                                  "true"
                                                  "false"]]
-                                               ["--" "comp-debug" "snapshot" ["{}" [":bottom" "0"] [":left" "0"]]]]],
+                                               ["--" "comp-inspect" "snapshot" ["{}" [":bottom" "0"] [":left" "0"]]]]],
                                "handle-command" ["defn"
                                                  "handle-command"
                                                  ["on-command" "snapshot"]
@@ -366,10 +365,10 @@
                         :procs []},
          "comp.container" {:ns ["ns"
                                 "cirru-editor.comp.container"
-                                [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
+                                [":require-macros" ["[]" "respo.macros" ":refer" ["[]" "defcomp" "<>" "div" "span"]]]
                                 [":require"
                                  ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                                 ["[]" "respo.alias" ":refer" ["[]" "div" "span"]]
+                                 ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                                  ["[]" "cirru-editor.comp.editor" ":refer" ["[]" "comp-editor"]]]],
                            :defs {"on-command" ["defn"
                                                 "on-command"
@@ -414,13 +413,14 @@
          "main" {:ns ["ns"
                       "cirru-editor.main"
                       [":require"
-                       ["[]" "respo.core" ":refer" ["[]" "render!" "clear-cache!" "render-element" "falsify-stage!"]]
+                       ["[]" "respo.core" ":refer" ["[]" "render!" "clear-cache!" "realize-ssr!"]]
                        ["[]" "respo.cursor" ":refer" ["[]" "mutate"]]
                        ["[]" "cirru-editor.comp.container" ":refer" ["[]" "comp-container"]]
                        ["[]" "cljs.reader" ":refer" ["[]" "read-string"]]
                        ["[]" "cirru-editor.util.dom" ":refer" ["[]" "focus!"]]
                        ["cirru-editor.schema" ":as" "schema"]]],
-                 :defs {"dispatch!" ["defn"
+                 :defs {"ssr?" ["def" "ssr?" ["some?" [".querySelector" "js/document" "|meta.respo-ssr"]]],
+                        "dispatch!" ["defn"
                                      "dispatch!"
                                      ["op" "op-data"]
                                      ["--" "println" "|dispatch:" "op" "op-data"]
@@ -430,37 +430,36 @@
                                       [":states" ["swap!" "*store" "update" ":states" ["mutate" "op-data"]]]
                                       "nil"]
                                      ["reset!" "*touched" "true"]],
-                        "reload!" ["defn" "reload!" [] ["clear-cache!"] ["render-app!"] ["println" "|code updated."]],
-                        "render-app!" ["defn"
-                                       "render-app!"
-                                       []
-                                       ["render!" ["comp-container" "@*store"] "mount-target" "dispatch!"]
-                                       ["if" "@*touched" ["do" ["focus!"] ["reset!" "*touched" "false"]]]],
+                        "*store" ["defonce" "*store" ["atom" "schema/store"]],
                         "main!" ["defn"
                                  "main!"
                                  []
-                                 ["if"
-                                  "server-rendered?"
-                                  ["falsify-stage!"
-                                   "mount-target"
-                                   ["render-element" ["comp-container" "@*store"]]
-                                   "dispatch!"]]
-                                 ["render-app!"]
-                                 ["add-watch" "*store" ":changes" "render-app!"]
+                                 ["if" "ssr?" ["render-app!" "realize-ssr!"]]
+                                 ["render-app!" "render!"]
+                                 ["add-watch" "*store" ":changes" ["fn" [] ["render-app!" "render!"]]]
                                  ["println" "|app started!"]],
-                        "*store" ["defonce" "*store" ["atom" "schema/store"]],
+                        "render-app!" ["defn"
+                                       "render-app!"
+                                       ["renderer"]
+                                       ["renderer" "mount-target" ["comp-container" "@*store"] "dispatch!"]
+                                       ["if"
+                                        "@*touched"
+                                        ["do" ["reset!" "*touched" "false"] ["println" "|changing focus"] ["focus!"]]]],
+                        "reload!" ["defn"
+                                   "reload!"
+                                   []
+                                   ["clear-cache!"]
+                                   ["render-app!" "render!"]
+                                   ["println" "|code updated."]],
                         "*touched" ["def" "*touched" ["atom" "false"]],
-                        "mount-target" ["def" "mount-target" [".querySelector" "js/document" "|.app"]],
-                        "server-rendered?" ["def"
-                                            "server-rendered?"
-                                            ["some?" [".querySelector" "js/document" "|meta#server-rendered"]]]},
+                        "mount-target" ["def" "mount-target" [".querySelector" "js/document" "|.app"]]},
                  :procs [["set!" "js/window.onload" "main!"]]},
          "comp.token" {:ns ["ns"
                             "cirru-editor.comp.token"
-                            [":require-macros" ["respo.macros" ":refer" ["defcomp"]]]
+                            [":require-macros" ["respo.macros" ":refer" ["[]" "defcomp" "<>" "div" "input"]]]
                             [":require"
                              ["[]" "hsl.core" ":refer" ["[]" "hsl"]]
-                             ["[]" "respo.alias" ":refer" ["[]" "div" "input"]]
+                             ["[]" "respo.core" ":refer" ["[]" "create-comp"]]
                              ["[]" "cirru-editor.util.measure" ":refer" ["[]" "text-width"]]
                              ["[]" "cirru-editor.util.detect" ":refer" ["[]" "has-blank?"]]
                              ["[]" "cirru-editor.util.keycode" ":as" "keycode"]]],
@@ -575,88 +574,55 @@
                        :procs []},
          "render" {:ns ["ns"
                         "cirru-editor.render"
-                        [":require"
+                        [":require-macros"
                          ["[]"
-                          "respo.alias"
+                          "respo.macros"
                           ":refer"
-                          ["[]" "html" "head" "title" "script" "style" "meta'" "div" "link" "body"]]
-                         ["[]" "respo.render.html" ":refer" ["[]" "make-html" "make-string"]]
+                          ["[]" "html" "head" "title" "script" "style" "meta'" "div" "link" "body"]]]
+                        [":require"
+                         ["[]" "respo.core" ":refer" ["[]" "create-element"]]
+                         ["[]" "respo.render.html" ":refer" ["[]" "make-string"]]
                          ["[]" "cirru-editor.comp.container" ":refer" ["[]" "comp-container"]]
-                         ["[]" "|fs" ":refer" ["[]" "readFileSync" "writeFileSync"]]
-                         ["cirru-editor.schema" ":as" "schema"]]],
+                         ["[]" "shell-page.core" ":refer" ["[]" "make-page" "slurp" "spit"]]
+                         ["[]" "cirru-editor.schema" ":as" "schema"]]],
                    :defs {"main!" ["defn"
                                    "main!"
                                    []
                                    ["if"
                                     ["=" "js/process.env.env" "|dev"]
-                                    ["spit" "|target/index.html" ["generate-empty-html"]]
-                                    ["spit" "|dist/index.html" ["generate-html"]]]],
-                          "spit" ["defn"
-                                  "spit"
-                                  ["file-name" "content"]
-                                  ["writeFileSync" "file-name" "content"]
-                                  ["println" "|Wrote to:" "file-name"]],
-                          "generate-empty-html" ["defn"
-                                                 "generate-empty-html"
-                                                 []
-                                                 ["html-dsl"
-                                                  ["{}"
-                                                   [":build?" "false"]
-                                                   [":main" "|/main.js"]
-                                                   [":cljs-main" "|/browser/main.js"]]
-                                                  "|"]],
-                          "generate-html" ["defn"
-                                           "generate-html"
-                                           []
-                                           ["let"
-                                            [["tree" ["comp-container" "schema/store"]]
-                                             ["html-content" ["make-string" "tree"]]
-                                             ["resources"
-                                              ["let"
-                                               [["manifest" ["js/JSON.parse" ["slurp" "|dist/manifest.json"]]]]
-                                               ["{}"
-                                                [":build?" "true"]
-                                                [":css" ["aget" "manifest" "|main.css"]]
-                                                [":main" ["aget" "manifest" "|main.js"]]
-                                                [":vendor" ["aget" "manifest" "|vendor.js"]]]]]]
-                                            ["html-dsl" "resources" "html-content"]]],
-                          "slurp" ["defn" "slurp" ["x"] ["readFileSync" "x" "|utf8"]],
-                          "html-dsl" ["defn"
-                                      "html-dsl"
-                                      ["resources" "html-content"]
-                                      ["make-html"
-                                       ["html"
-                                        ["{}"]
-                                        ["head"
-                                         ["{}"]
-                                         ["title" ["{}" [":innerHTML" "|Cirru Editor"]]]
-                                         ["link" ["{}" [":rel" "|icon"] [":type" "|image/png"] [":href" "icon-url"]]]
-                                         ["link" ["{}" [":rel" "|manifest"] [":href" "|manifest.json"]]]
-                                         ["meta'" ["{}" [":charset" "|utf8"]]]
-                                         ["meta'"
+                                    ["spit" "|target/index.html" ["dev-page"]]
+                                    ["spit" "|dist/index.html" ["prod-page"]]]],
+                          "base-info" ["def"
+                                       "base-info"
+                                       ["{}"
+                                        [":title" "|Cirru Editor"]
+                                        [":icon" "|http://repo.cirru.org/logo.cirru.org/cirru-400x400.png"]
+                                        [":ssr" "nil"]
+                                        [":inline-html" "|"]]],
+                          "prod-page" ["defn"
+                                       "prod-page"
+                                       []
+                                       ["let"
+                                        [["html-content" ["make-string" ["comp-container" "schema/store"]]]
+                                         ["manifest" ["js/JSON.parse" ["slurp" "|dist/manifest.json"]]]]
+                                        ["make-page"
+                                         "html-content"
+                                         ["merge"
+                                          "base-info"
                                           ["{}"
-                                           [":name" "|viewport"]
-                                           [":content" "|width=device-width, initial-scale=1"]]]
-                                         ["if"
-                                          [":build?" "resources"]
-                                          ["meta'" ["{}" [":id" "|server-rendered"] [":type" "|text/edn"]]]]
-                                         ["if"
-                                          ["contains?" "resources" ":css"]
-                                          ["link"
-                                           ["{}"
-                                            [":rel" "|stylesheet"]
-                                            [":type" "|text/css"]
-                                            [":href" [":css" "resources"]]]]]]
-                                        ["body"
-                                         ["{}"]
-                                         ["div" ["{}" [":class-name" "|app"] [":innerHTML" "html-content"]]]
-                                         ["if"
-                                          [":build?" "resources"]
-                                          ["script" ["{}" [":src" [":vendor" "resources"]]]]
-                                          ["script" ["{}" [":src" [":cljs-main" "resources"]]]]]
-                                         ["script" ["{}" [":src" [":main" "resources"]]]]]]]],
-                          "icon-url" ["def" "icon-url" "|http://repo.cirru.org/logo.cirru.org/cirru-400x400.png"]},
-                   :procs [["main!"]]},
+                                           [":styles" ["[]" ["aget" "manifest" "|main.css"]]]
+                                           [":scripts"
+                                            ["[]" ["aget" "manifest" "|vendor.js"] ["aget" "manifest" "|main.js"]]]
+                                           [":ssr" "|respo-ssr"]]]]]],
+                          "dev-page" ["defn"
+                                      "dev-page"
+                                      []
+                                      ["make-page"
+                                       "|"
+                                       ["merge"
+                                        "base-info"
+                                        ["{}" [":styles" ["[]"]] [":scripts" ["[]" "|/main.js" "|/browser/main.js"]]]]]]},
+                   :procs []},
          "modifier.tree" {:ns ["ns" "cirru-editor.modifier.tree"],
                           :defs {"before-token" ["defn"
                                                  "before-token"

@@ -1,12 +1,11 @@
 
 (ns cirru-editor.comp.expression
-  (:require-macros (respo.macros :refer (defcomp)))
+  (:require-macros [respo.macros :refer [defcomp <> div span]])
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [div]]
+            [respo.core :refer [create-comp]]
             [respo.cursor :refer [with-cursor]]
-            [respo.comp.text :refer [comp-text]]
-            [respo.comp.space :refer [comp-space]]
-            [respo.comp.debug :refer [comp-debug]]
+            [respo.comp.space :refer [=<]]
+            [respo.comp.inspect :refer [comp-inspect]]
             [cirru-editor.comp.token :refer [comp-token]]
             [cirru-editor.util.detect :refer [coord-contains? shallow? deep?]]
             [cirru-editor.util.keycode :as keycode]))
@@ -101,7 +100,7 @@
       {:style style-folded,
        :event {:click (on-unfold cursor state),
                :keydown (on-keydown cursor state modify! coord on-command)}}
-      (comp-text (first expression) nil))
+      (<> span (first expression) nil))
      (div
       {:tab-index 0,
        :class-name (if (= coord focus) "editor-focused cirru-expression" "cirru-expression"),

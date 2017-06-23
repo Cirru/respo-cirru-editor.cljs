@@ -1,8 +1,8 @@
 
 (ns cirru-editor.comp.token
-  (:require-macros (respo.macros :refer (defcomp)))
+  (:require-macros (respo.macros :refer [defcomp <> div input]))
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [div input]]
+            [respo.core :refer [create-comp]]
             [cirru-editor.util.measure :refer [text-width]]
             [cirru-editor.util.detect :refer [has-blank?]]
             [cirru-editor.util.keycode :as keycode]))

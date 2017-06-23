@@ -1,11 +1,10 @@
 
 (ns cirru-editor.comp.editor
-  (:require-macros (respo.macros :refer (defcomp)))
+  (:require-macros [respo.macros :refer [defcomp <> div style span]])
   (:require [hsl.core :refer [hsl]]
-            [respo.alias :refer [div style]]
-            [respo.comp.debug :refer [comp-debug]]
-            [respo.comp.space :refer [comp-space]]
-            [respo.comp.text :refer [comp-text]]
+            [respo.core :refer [create-comp]]
+            [respo.comp.inspect :refer [comp-inspect]]
+            [respo.comp.space :refer [=<]]
             [cirru-editor.modifier.core :refer [updater]]
             [cirru-editor.comp.expression :refer [comp-expression style-expression]]
             [cirru-editor.comp.token :refer [style-token]]
@@ -54,4 +53,4 @@
     (handle-command on-command snapshot)
     true
     false))
-  (comment comp-debug snapshot {:bottom 0, :left 0})))
+  (comment comp-inspect snapshot {:bottom 0, :left 0})))

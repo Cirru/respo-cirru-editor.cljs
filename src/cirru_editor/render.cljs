@@ -1,57 +1,33 @@
 
 (ns cirru-editor.render
-  (:require [respo.alias :refer [html head title script style meta' div link body]]
-            [respo.render.html :refer [make-html make-string]]
+  (:require-macros [respo.macros :refer [html head title script style meta' div link body]])
+  (:require [respo.core :refer [create-element]]
+            [respo.render.html :refer [make-string]]
             [cirru-editor.comp.container :refer [comp-container]]
-            ["fs" :refer [readFileSync writeFileSync]]
-            (cirru-editor.schema :as schema)))
+            [shell-page.core :refer [make-page slurp spit]]
+            [cirru-editor.schema :as schema]))
 
-(defn spit [file-name content]
-  (writeFileSync file-name content)
-  (println "Wrote to:" file-name))
+(def base-info
+  {:title "Cirru Editor",
+   :icon "http://repo.cirru.org/logo.cirru.org/cirru-400x400.png",
+   :ssr nil,
+   :inline-html ""})
 
-(def icon-url "http://repo.cirru.org/logo.cirru.org/cirru-400x400.png")
+(defn prod-page []
+  (let [html-content (make-string (comp-container schema/store))
+        manifest (js/JSON.parse (slurp "dist/manifest.json"))]
+    (make-page
+     html-content
+     (merge
+      base-info
+      {:styles [(aget manifest "main.css")],
+       :scripts [(aget manifest "vendor.js") (aget manifest "main.js")],
+       :ssr "respo-ssr"}))))
 
-(defn html-dsl [resources html-content]
-  (make-html
-   (html
-    {}
-    (head
-     {}
-     (title {:innerHTML "Cirru Editor"})
-     (link {:rel "icon", :type "image/png", :href icon-url})
-     (link {:rel "manifest", :href "manifest.json"})
-     (meta' {:charset "utf8"})
-     (meta' {:name "viewport", :content "width=device-width, initial-scale=1"})
-     (if (:build? resources) (meta' {:id "server-rendered", :type "text/edn"}))
-     (if (contains? resources :css)
-       (link {:rel "stylesheet", :type "text/css", :href (:css resources)})))
-    (body
-     {}
-     (div {:class-name "app", :innerHTML html-content})
-     (if (:build? resources)
-       (script {:src (:vendor resources)})
-       (script {:src (:cljs-main resources)}))
-     (script {:src (:main resources)})))))
-
-(defn generate-empty-html []
-  (html-dsl {:build? false, :main "/main.js", :cljs-main "/browser/main.js"} ""))
-
-(defn slurp [x] (readFileSync x "utf8"))
-
-(defn generate-html []
-  (let [tree (comp-container schema/store)
-        html-content (make-string tree)
-        resources (let [manifest (js/JSON.parse (slurp "dist/manifest.json"))]
-                    {:build? true,
-                     :css (aget manifest "main.css"),
-                     :main (aget manifest "main.js"),
-                     :vendor (aget manifest "vendor.js")})]
-    (html-dsl resources html-content)))
+(defn dev-page []
+  (make-page "" (merge base-info {:styles [], :scripts ["/main.js" "/browser/main.js"]})))
 
 (defn main! []
   (if (= js/process.env.env "dev")
-    (spit "target/index.html" (generate-empty-html))
-    (spit "dist/index.html" (generate-html))))
-
-(main!)
+    (spit "target/index.html" (dev-page))
+    (spit "dist/index.html" (prod-page))))

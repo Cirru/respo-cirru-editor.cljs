@@ -2,14 +2,17 @@
 {:source-paths ["src"]
  :dependencies [[mvc-works/hsl "0.1.2"]
                 [respo/ui "0.1.9"]
-                [respo "0.4.5"]]
- :builds {:dev {:output-dir "target/browser"
-                :asset-path "/browser"
-                :target :browser
-                :modules {:main {:entries [cirru-editor.main]}}
-                :devtools {:after-load cirru-editor.main/reload!}}
-          :npm {:output-dir "target"
-                :target :npm-module}
+                [respo "0.5.3"]
+                [mvc-works/shell-page "0.1.1"]]
+ :builds {:browser {:output-dir "target/browser"
+                    :asset-path "/browser"
+                    :target :browser
+                    :modules {:main {:entries [cirru-editor.main]}}
+                    :devtools {:after-load cirru-editor.main/reload!}}
+          :ssr {:target :node-script
+                :output-to "target/ssr.js"
+                :main cirru-editor.render/main!
+                :devtools {:after-load cirru-editor.render/main!}}
           :release {:entries [cirru-editor.main]
                     :target :npm-module
                     :output-dir "target/release/"}}}
