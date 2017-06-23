@@ -5,7 +5,7 @@
                   [respo/ui                  "0.1.9"]
                   [respo                     "0.5.3"]])
 
-(def +version+ "0.2.1")
+(def +version+ "0.2.2")
 
 (deftask build []
   (comp
