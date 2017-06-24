@@ -1,9 +1,8 @@
 
 (ns cirru-editor.comp.expression
-  (:require-macros [respo.macros :refer [defcomp <> div span]])
+  (:require-macros [respo.macros :refer [defcomp cursor-> <> div span]])
   (:require [hsl.core :refer [hsl]]
             [respo.core :refer [create-comp]]
-            [respo.cursor :refer [with-cursor]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [cirru-editor.comp.token :refer [comp-token]]
@@ -30,10 +29,10 @@
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord dispatch!))))
 
-(defn on-unfold [cursor state] (fn [e dispatch!] (dispatch! :states [cursor (not state)])))
+(defn on-unfold [state] (fn [e dispatch! mutate!] (mutate! (not state))))
 
-(defn on-keydown [cursor state modify! coord on-command]
-  (fn [e dispatch!]
+(defn on-keydown [state modify! coord on-command]
+  (fn [e dispatch! mutate!]
     (let [code (:key-code e)
           event (:original-event e)
           shift? (.-shiftKey event)
@@ -73,8 +72,7 @@
         (and command? (= code keycode/key-c)) (modify! :command-copy coord dispatch!)
         (and command? (= code keycode/key-x)) (modify! :command-cut coord dispatch!)
         (and command? (= code keycode/key-v)) (modify! :command-paste coord dispatch!)
-        (and command? shift? (= code keycode/key-f))
-          (dispatch! :states [cursor (not state)])
+        (and command? shift? (= code keycode/key-f)) (mutate! (not state))
         :else (if command? (on-command e dispatch!) nil)))))
 
 (def style-inline
@@ -98,8 +96,8 @@
    (if state
      (div
       {:style style-folded,
-       :event {:click (on-unfold cursor state),
-               :keydown (on-keydown cursor state modify! coord on-command)}}
+       :event {:click (on-unfold state),
+               :keydown (on-keydown state modify! coord on-command)}}
       (<> span (first expression) nil))
      (div
       {:tab-index 0,
@@ -115,7 +113,7 @@
                (if (and tail? (not head?) (pos? level)) style-tail)
                (if (= coord focus) {:border-color (hsl 0 0 100 0.6)})),
        :event {:click (on-click modify! coord focus),
-               :keydown (on-keydown cursor state modify! coord on-command)}}
+               :keydown (on-keydown state modify! coord on-command)}}
       (loop [acc [], idx 0, expr expression, child-after-expression? false]
         (if (empty? expr)
           acc
@@ -132,21 +130,19 @@
                            child-focus
                            on-command
                            child-head?)
-                          (let [child-states (get states idx)]
-                            (with-cursor
-                             idx
-                             (comp-expression
-                              child-states
-                              item
-                              modify!
-                              child-coord
-                              (inc level)
-                              (and (or after-expression? (not tail?))
-                                   (= (dec exp-size) idx))
-                              child-focus
-                              on-command
-                              child-head?
-                              child-after-expression?)))))]
+                          (cursor->
+                           idx
+                           comp-expression
+                           states
+                           item
+                           modify!
+                           child-coord
+                           (inc level)
+                           (and (or after-expression? (not tail?)) (= (dec exp-size) idx))
+                           child-focus
+                           on-command
+                           child-head?
+                           child-after-expression?)))]
                 next-acc (conj acc pair)]
             (recur next-acc (inc idx) (rest expr) (vector? item)))))))))
 
