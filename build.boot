@@ -3,9 +3,9 @@
   :resource-paths #{"src/"}
   :dependencies '[[mvc-works/hsl             "0.1.2"]
                   [respo/ui                  "0.1.9"]
-                  [respo                     "0.5.3"]])
+                  [respo                     "0.5.7"]])
 
-(def +version+ "0.2.2")
+(def +version+ "0.2.4")
 
 (deftask build []
   (comp
