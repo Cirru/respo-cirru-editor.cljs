@@ -1,3 +1,3 @@
+
 require('respo-ui');
 require('./main.css');
-require('../target/release/cirru_editor.main.js');

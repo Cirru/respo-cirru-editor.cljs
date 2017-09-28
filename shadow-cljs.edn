@@ -1,18 +1,23 @@
 
 {:source-paths ["src"]
- :dependencies [[mvc-works/hsl "0.1.2"]
-                [respo/ui "0.1.9"]
-                [respo "0.5.7"]
-                [mvc-works/shell-page "0.1.1"]]
- :builds {:browser {:output-dir "target/browser"
+ :dependencies [[mvc-works/hsl        "0.1.2"]
+                [respo/ui             "0.1.9"]
+                [respo                "0.6.2"]
+                [mvc-works/shell-page "0.1.2"]]
+ :http {:host "localhost" :port 8081}
+ :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
+ :builds {:browser {:target :browser
+                    :output-dir "target/browser"
                     :asset-path "/browser"
-                    :target :browser
-                    :modules {:main {:entries [cirru-editor.main]}}
-                    :devtools {:after-load cirru-editor.main/reload!}}
+                    :modules {:main {:entries [cirru-editor.main]
+                                     :depends-on #{:lib}}
+                              :lib {:entries [respo.core respo.macros
+                                              respo.comp.inspect]}}
+                    :devtools {:after-load cirru-editor.main/reload!
+                               :preloads [shadow.cljs.devtools.client.hud]}
+                    :release {:output-dir "dist/"
+                              :module-hash-names true}}
           :ssr {:target :node-script
                 :output-to "target/ssr.js"
                 :main cirru-editor.render/main!
-                :devtools {:after-load cirru-editor.render/main!}}
-          :release {:entries [cirru-editor.main]
-                    :target :npm-module
-                    :output-dir "target/release/"}}}
+                :devtools {:after-load cirru-editor.render/main!}}}}

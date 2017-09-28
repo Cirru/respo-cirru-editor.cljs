@@ -13,19 +13,29 @@
    :ssr nil,
    :inline-html ""})
 
+(def preview? (= "preview" js/process.env.prod))
+
 (defn prod-page []
   (let [html-content (make-string (comp-container schema/store))
-        manifest (js/JSON.parse (slurp "dist/manifest.json"))]
+        manifest (js/JSON.parse (slurp "dist/assets-manifest.json"))
+        cljs-manifest (js/JSON.parse (slurp "dist/manifest.json"))
+        cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/coworkflow/cirru-editor/")]
     (make-page
      html-content
      (merge
       base-info
-      {:styles [(aget manifest "main.css")],
-       :scripts [(aget manifest "vendor.js") (aget manifest "main.js")],
+      {:styles [(str cdn (aget manifest "main.css"))],
+       :scripts [(str cdn (aget manifest "main.js"))
+                 (str cdn (-> cljs-manifest (aget 0) (aget "js-name")))
+                 (str cdn (-> cljs-manifest (aget 1) (aget "js-name")))],
        :ssr "respo-ssr"}))))
 
 (defn dev-page []
-  (make-page "" (merge base-info {:styles [], :scripts ["/main.js" "/browser/main.js"]})))
+  (make-page
+   ""
+   (merge
+    base-info
+    {:styles [], :scripts ["/main.js" "/browser/lib.js" "/browser/main.js"]})))
 
 (defn main! []
   (if (= js/process.env.env "dev")

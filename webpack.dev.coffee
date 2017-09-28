@@ -1,5 +1,6 @@
 
 path = require 'path'
+resolve = require('path').resolve
 webpack = require 'webpack'
 
 module.exports =
@@ -8,9 +9,10 @@ module.exports =
   devServer:
     clientLogLevel: 'info'
     stats: 'errors-only'
-    contentBase: path.resolve(__dirname, 'target')
+    contentBase: resolve(__dirname, 'target')
     publicPath: '/'
     host: '0.0.0.0'
+    disableHostCheck: true
   output:
     filename: '[name].js'
   module:
