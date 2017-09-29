@@ -19,7 +19,7 @@
   (let [html-content (make-string (comp-container schema/store))
         manifest (js/JSON.parse (slurp "dist/assets-manifest.json"))
         cljs-manifest (js/JSON.parse (slurp "dist/manifest.json"))
-        cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/coworkflow/cirru-editor/")]
+        cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/respo-cirru-editor/")]
     (make-page
      html-content
      (merge
