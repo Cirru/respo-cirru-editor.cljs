@@ -9,7 +9,7 @@
 
 (def base-info
   {:title "Cirru Editor",
-   :icon "http://repo.cirru.org/logo.cirru.org/cirru-400x400.png",
+   :icon "http://cdn.tiye.me/logo/cirru.png",
    :ssr nil,
    :inline-html ""})
 
@@ -17,17 +17,19 @@
 
 (defn prod-page []
   (let [html-content (make-string (comp-container schema/store))
-        manifest (js/JSON.parse (slurp "dist/assets-manifest.json"))
-        cljs-manifest (js/JSON.parse (slurp "dist/manifest.json"))
-        cdn (if preview? "" "http://repo-cdn.b0.upaiyun.com/respo-cirru-editor/")]
+        webpack-info (js/JSON.parse (slurp "dist/webpack-manifest.json"))
+        cljs-info (js/JSON.parse (slurp "dist/cljs-manifest.json"))
+        cdn (if preview? "" "http://cdn.tiye.me/respo-cirru-editor/")
+        prefix-cdn (fn [x] (str cdn x))]
     (make-page
      html-content
      (merge
       base-info
-      {:styles [(str cdn (aget manifest "main.css"))],
-       :scripts [(str cdn (aget manifest "main.js"))
-                 (str cdn (-> cljs-manifest (aget 0) (aget "js-name")))
-                 (str cdn (-> cljs-manifest (aget 1) (aget "js-name")))],
+      {:styles [(prefix-cdn (aget webpack-info "main.css"))],
+       :scripts (map
+                 prefix-cdn
+                 [(-> cljs-info (aget 0) (aget "js-name"))
+                  (-> cljs-info (aget 1) (aget "js-name"))]),
        :ssr "respo-ssr"}))))
 
 (defn dev-page []

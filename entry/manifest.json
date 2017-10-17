@@ -3,8 +3,8 @@
   "name": "Cirru Editor",
   "icons": [
     {
-      "src": "http://logo.mvc-works.org/mvc.png",
-      "sizes": "460x460"
+      "src": "http://cdn.tiye.me/logo/mvc-works.png",
+      "sizes": "320x320"
     }
   ],
   "start_url": "index.html",

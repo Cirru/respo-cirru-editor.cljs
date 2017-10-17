@@ -16,7 +16,8 @@
                     :devtools {:after-load cirru-editor.main/reload!
                                :preloads [shadow.cljs.devtools.client.hud]}
                     :release {:output-dir "dist/"
-                              :module-hash-names true}}
+                              :module-hash-names true
+                              :build-options {:manifest-name "cljs-manifest.json"}}}
           :ssr {:target :node-script
                 :output-to "target/ssr.js"
                 :main cirru-editor.render/main!
