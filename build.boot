@@ -4,12 +4,12 @@
 
 (set-env!
   :resource-paths #{"src"}
-  :dependencies '[[mvc-works/hsl             "0.1.2"]]
+  :dependencies '[[mvc-works/hsl "0.1.2"]]
   :repositories #(conj % ["clojars" {:url "https://clojars.org/repo/"
                                      :username "jiyinyiyong"
                                      :password (read-password "Clojars password: ")}]))
 
-(def +version+ "0.2.4")
+(def +version+ "0.2.5")
 
 (deftask deploy []
   (comp
