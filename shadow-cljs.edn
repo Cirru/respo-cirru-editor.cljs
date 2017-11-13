@@ -1,10 +1,9 @@
 
 {:source-paths ["src"]
  :dependencies [[mvc-works/hsl        "0.1.2"]
-                [respo/ui             "0.1.9"]
-                [respo                "0.6.2"]
-                [mvc-works/shell-page "0.1.2"]]
- :http {:host "localhost" :port 8081}
+                [respo/ui             "0.2.0"]
+                [respo                "0.7.1"]
+                [mvc-works/shell-page "0.1.6"]]
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
  :builds {:browser {:target :browser
                     :output-dir "target/browser"
@@ -14,9 +13,11 @@
                               :lib {:entries [respo.core respo.macros
                                               respo.comp.inspect]}}
                     :devtools {:after-load cirru-editor.main/reload!
-                               :preloads [shadow.cljs.devtools.client.hud]}
+                               :preloads [shadow.cljs.devtools.client.hud]
+                               :http-root "target"
+                               :http-port 8080}
                     :release {:output-dir "dist/"
-                              :module-hash-names true
+                              :module-hash-names 8
                               :build-options {:manifest-name "cljs-manifest.json"}}}
           :ssr {:target :node-script
                 :output-to "target/ssr.js"

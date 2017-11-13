@@ -1,6 +1,6 @@
 
 (ns cirru-editor.comp.expression
-  (:require-macros [respo.macros :refer [defcomp cursor-> <> div span]])
+  (:require-macros [respo.macros :refer [defcomp list-> cursor-> <> div span]])
   (:require [hsl.core :refer [hsl]]
             [respo.core :refer [create-comp]]
             [respo.comp.space :refer [=<]]
@@ -96,10 +96,10 @@
    (if state
      (div
       {:style style-folded,
-       :event {:click (on-unfold state),
-               :keydown (on-keydown state modify! coord on-command)}}
+       :on {:click (on-unfold state), :keydown (on-keydown state modify! coord on-command)}}
       (<> span (first expression) nil))
-     (div
+     (list->
+      :div
       {:tab-index 0,
        :class-name (if (= coord focus) "editor-focused cirru-expression" "cirru-expression"),
        :style (merge
@@ -112,8 +112,8 @@
                  style-inline)
                (if (and tail? (not head?) (pos? level)) style-tail)
                (if (= coord focus) {:border-color (hsl 0 0 100 0.6)})),
-       :event {:click (on-click modify! coord focus),
-               :keydown (on-keydown state modify! coord on-command)}}
+       :on {:click (on-click modify! coord focus),
+            :keydown (on-keydown state modify! coord on-command)}}
       (loop [acc [], idx 0, expr expression, child-after-expression? false]
         (if (empty? expr)
           acc

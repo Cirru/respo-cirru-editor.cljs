@@ -69,12 +69,12 @@
   {:value token,
    :spellcheck false,
    :class-name (if (= coord focus) "editor-focused cirru-token" "cirru-token"),
-   :event {:input (on-input modify! coord),
-           :keydown (on-keydown modify! coord token on-command),
-           :click (on-click modify! coord focus)},
    :style (merge
            {}
            {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
            (if (or (has-blank? token) (zero? (count token)))
              {:background-color (hsl 0 0 100 0.16)})
-           (if head? {:color (hsl 40 80 60 0.9)}))}))
+           (if head? {:color (hsl 40 80 60 0.9)})),
+   :on {:input (on-input modify! coord),
+        :keydown (on-keydown modify! coord token on-command),
+        :click (on-click modify! coord focus)}}))
