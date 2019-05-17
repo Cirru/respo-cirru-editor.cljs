@@ -1,25 +1,30 @@
 
-{:source-paths ["src"]
+{:source-paths ["src" "cli"]
+ :cache-blockers #{cumulo-util.build}
  :dependencies [[mvc-works/hsl        "0.1.2"]
-                [respo/ui             "0.2.0"]
-                [respo                "0.7.1"]
-                [mvc-works/shell-page "0.1.6"]]
+                [mvc-works/shell-page "0.1.10"]
+                [respo                "0.10.11"]
+                [respo/ui             "0.3.12"]
+                [cumulo/util            "0.1.10"]
+                [org.clojure/core.incubator "0.1.4"]]
+ :repositories {"central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
+                "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}}
  :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
- :builds {:browser {:target :browser
-                    :output-dir "target/browser"
-                    :asset-path "/browser"
-                    :modules {:main {:entries [cirru-editor.main]
-                                     :depends-on #{:lib}}
-                              :lib {:entries [respo.core respo.macros
-                                              respo.comp.inspect]}}
-                    :devtools {:after-load cirru-editor.main/reload!
-                               :preloads [shadow.cljs.devtools.client.hud]
-                               :http-root "target"
-                               :http-port 8080}
-                    :release {:output-dir "dist/"
-                              :module-hash-names 8
-                              :build-options {:manifest-name "cljs-manifest.json"}}}
-          :ssr {:target :node-script
-                :output-to "target/ssr.js"
-                :main cirru-editor.render/main!
-                :devtools {:after-load cirru-editor.render/main!}}}}
+ :dev-http {7000 "target/"}
+ :builds {:client {:target :browser
+                   :output-dir "target/"
+                   :asset-path "./"
+                   :modules {:client {:init-fn cirru-editor.main/main!}}
+                   :devtools {:after-load cirru-editor.main/reload!}
+                   :compiler-options {:infer-externs :auto}
+                   :release {:output-dir "dist/"
+                             :module-hash-names 8
+                             :build-options {:manifest-name "assets.edn"}}}
+          :page {:target :node-script
+                 :output-to "target/page.js"
+                 :main cirru-editor.page/main!
+                 :devtools {:after-load cirru-editor.page/main!}}
+          :upload {:target :node-script
+                   :output-to "target/upload.js"
+                   :main cirru-editor.upload/main!
+                   :devtools {:after-load cirru-editor.upload/main!}}}}

@@ -1,35 +1,15 @@
 
 (ns cirru-editor.comp.expression
-  (:require-macros [respo.macros :refer [defcomp list-> cursor-> <> div span]])
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [create-comp]]
+            [respo.core :refer [create-comp defcomp list-> cursor-> <> div span]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [cirru-editor.comp.token :refer [comp-token]]
             [cirru-editor.util.detect :refer [coord-contains? shallow? deep?]]
             [cirru-editor.util.keycode :as keycode]))
 
-(def style-folded
-  {:display "inline-block",
-   :color (hsl 180 80 60),
-   :font-family "Source Code Pro,Menlo,monospace",
-   :font-size "15px",
-   :outline "none",
-   :border-width "1px",
-   :border-style "solid",
-   :border-color (hsl 0 0 100 0.5),
-   :padding-left 16,
-   :padding-right 16,
-   :vertical-align "top",
-   :line-height "27px",
-   :border-radius "16px",
-   :cursor "pointer",
-   :margin-bottom "4px"})
-
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord dispatch!))))
-
-(defn on-unfold [state] (fn [e dispatch! mutate!] (mutate! (not state))))
 
 (defn on-keydown [state modify! coord on-command]
   (fn [e dispatch! mutate!]
@@ -74,6 +54,25 @@
         (and command? (= code keycode/key-v)) (modify! :command-paste coord dispatch!)
         (and command? shift? (= code keycode/key-f)) (mutate! (not state))
         :else (if command? (on-command e dispatch!) nil)))))
+
+(defn on-unfold [state] (fn [e dispatch! mutate!] (mutate! (not state))))
+
+(def style-folded
+  {:display "inline-block",
+   :color (hsl 180 80 60),
+   :font-family "Source Code Pro,Menlo,monospace",
+   :font-size "15px",
+   :outline "none",
+   :border-width "1px",
+   :border-style "solid",
+   :border-color (hsl 0 0 100 0.5),
+   :padding-left 16,
+   :padding-right 16,
+   :vertical-align "top",
+   :line-height "27px",
+   :border-radius "16px",
+   :cursor "pointer",
+   :margin-bottom "4px"})
 
 (def style-inline
   {:display "inline-block",

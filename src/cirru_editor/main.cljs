@@ -5,9 +5,8 @@
             [cirru-editor.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
             [cirru-editor.util.dom :refer [focus!]]
-            (cirru-editor.schema :as schema)))
-
-(def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
+            [cirru-editor.schema :as schema]
+            [cirru-editor.config :as config]))
 
 (defonce *store (atom schema/store))
 
@@ -17,8 +16,7 @@
   (comment println "dispatch:" op op-data)
   (case op
     :save (reset! *store op-data)
-    :states (swap! *store update :states (mutate op-data))
-    nil)
+    :states (swap! *store update :states (mutate op-data)))
   (reset! *touched true))
 
 (def mount-target (.querySelector js/document ".app"))
@@ -27,12 +25,13 @@
   (renderer mount-target (comp-container @*store) dispatch!)
   (if @*touched (do (reset! *touched false) (println "changing focus") (focus!))))
 
+(def ssr? (some? (.querySelector js/document "meta.respo-ssr")))
+
 (defn main! []
+  (println "Running mode:" (if config/dev? "dev" "release"))
   (if ssr? (render-app! realize-ssr!))
   (render-app! render!)
   (add-watch *store :changes (fn [] (render-app! render!)))
   (println "app started!"))
 
 (defn reload! [] (clear-cache!) (render-app! render!) (println "code updated."))
-
-(set! js/window.onload main!)

@@ -4,18 +4,14 @@
   "description": "Stack Workflow",
   "main": "index.js",
   "scripts": {
-    "cdn": "rsync -avr --progress dist/* tiye.me:cdn/respo-cirru-editor",
-    "tiye": "rsync -r dist/* tiye.me:repo/Cirru/respo-cirru-editor/",
-    "upload": "yarn cdn && yarn tiye",
-    "release": "shadow-cljs release browser",
-    "watch": "shadow-cljs watch browser",
-    "compile-ssr": "shadow-cljs compile ssr",
-    "html-dev": "env=dev node target/ssr.js && cp entry/manifest.json target/",
-    "html": "node target/ssr.js && cp entry/manifest.json dist/",
-    "dev": "yarn compile-ssr && yarn html-dev",
-    "del": "rm -rf dist/*",
-    "serve": "http-server dist",
-    "build": "yarn del && yarn release && yarn compile-ssr && yarn html"
+    "watch": "shadow-cljs watch client",
+    "serve": "http-server dist -s",
+    "build-cdn": "shadow-cljs clj-run build.main/build-cdn",
+    "build": "shadow-cljs clj-run build.main/build",
+    "upload": "node target/upload.js",
+    "up": "yarn build-cdn && yarn upload",
+    "page": "shadow-cljs clj-run build.main/page",
+    "ln": "cd target && rm -f entry && ln -s ../entry"
   },
   "repository": {
     "type": "git",
@@ -24,7 +20,10 @@
   "author": "jiyinyiyong",
   "license": "MIT",
   "devDependencies": {
-    "http-server": "^0.10.0",
-    "shadow-cljs": "^2.0.75"
+    "http-server": "^0.11.1",
+    "shadow-cljs": "^2.8.37"
+  },
+  "dependencies": {
+    "shortid": "^2.2.14"
   }
 }

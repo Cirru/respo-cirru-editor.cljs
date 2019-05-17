@@ -1,28 +1,13 @@
 
 (ns cirru-editor.comp.token
-  (:require-macros (respo.macros :refer [defcomp <> div input]))
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [create-comp]]
+            [respo.core :refer [create-comp defcomp <> div input]]
             [cirru-editor.util.measure :refer [text-width]]
             [cirru-editor.util.detect :refer [has-blank?]]
             [cirru-editor.util.keycode :as keycode]))
 
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord dispatch!))))
-
-(def style-token
-  {:border "none",
-   :font-size "15px",
-   :line-height "24px",
-   :font-family "Source Code Pro,Menlo,monospace",
-   :padding "0 2px",
-   :margin-left 2,
-   :margin-right 2,
-   :outline "none",
-   :max-width "320px",
-   :background-color (hsl 0 0 100 0),
-   :color (hsl 200 12 67 0.9),
-   :text-align "center"})
 
 (defn on-input [modify! coord]
   (fn [e dispatch!] (modify! :update-token [coord (:value e)] dispatch!)))
@@ -61,6 +46,20 @@
         (and shift? command? (= code keycode/key-v))
           (do (.preventDefault event) (modify! :command-paste coord dispatch!))
         :else (if command? (on-command e dispatch!) nil)))))
+
+(def style-token
+  {:border "none",
+   :font-size "15px",
+   :line-height "24px",
+   :font-family "Source Code Pro,Menlo,monospace",
+   :padding "0 2px",
+   :margin-left 2,
+   :margin-right 2,
+   :outline "none",
+   :max-width "320px",
+   :background-color (hsl 0 0 100 0),
+   :color (hsl 200 12 67 0.9),
+   :text-align "center"})
 
 (defcomp
  comp-token

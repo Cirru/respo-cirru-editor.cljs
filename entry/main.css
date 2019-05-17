@@ -1,8 +1,31 @@
 
 body {
   margin: 0;
+  overscroll-behavior-y: none;
 }
 
 body * {
   box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: hsla(0,0%,100%);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsla(200,100%,76%,0.8);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-resizer {
+  background-color:transparent;
 }
