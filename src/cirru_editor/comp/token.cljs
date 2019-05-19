@@ -71,9 +71,17 @@
    :style (merge
            {}
            {:width (str (+ 8 (text-width token 15 (:font-family style-token))) "px")}
-           (if (or (has-blank? token) (zero? (count token)))
-             {:background-color (hsl 0 0 100 0.16)})
-           (if head? {:color (hsl 40 80 60 0.9)})),
+           (cond
+             (contains? #{"true" "false"} token) {:color "rgb(119, 102, 204)"}
+             (contains? #{"nil"} token) {:color "rgb(163, 41, 143)"}
+             (= "#\"" (subs token 0 2)) {:color (hsl 300 60 45)}
+             (contains? #{"\"" "|"} (subs token 0 1)) {:color "rgb(75, 210, 75)"}
+             (contains? #{":"} (subs token 0 1)) {:color "rgb(136, 136, 191)"}
+             (re-matches #"-?[\d\.]+" token) {:color "rgb(173, 31, 31)"}
+             (or (has-blank? token) (zero? (count token)))
+               {:background-color (hsl 0 0 100 0.16)}
+             head? {:color (hsl 40 80 60 0.9)}
+             :else nil)),
    :on {:input (on-input modify! coord),
         :keydown (on-keydown modify! coord token on-command),
         :click (on-click modify! coord focus)}}))
