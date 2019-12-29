@@ -1,7 +1,7 @@
 
 (ns cirru-editor.comp.container
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [create-comp defcomp <> div span]]
+            [respo.core :refer [defcomp <> div span]]
             [cirru-editor.comp.editor :refer [comp-editor]]))
 
 (defn on-command [snapshot dispatch! e] (println "command" e))

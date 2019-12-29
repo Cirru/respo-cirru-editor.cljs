@@ -1,7 +1,7 @@
 
 (ns cirru-editor.comp.editor
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [create-comp defcomp <> div style span]]
+            [respo.core :refer [defcomp <> div style span]]
             [respo.comp.inspect :refer [comp-inspect]]
             [respo.comp.space :refer [=<]]
             [cirru-editor.modifier.core :refer [updater]]

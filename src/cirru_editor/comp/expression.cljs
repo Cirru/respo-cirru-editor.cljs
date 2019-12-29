@@ -1,7 +1,7 @@
 
 (ns cirru-editor.comp.expression
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [create-comp defcomp list-> cursor-> <> div span]]
+            [respo.core :refer [defcomp list-> cursor-> <> div span]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [cirru-editor.comp.token :refer [comp-token]]
