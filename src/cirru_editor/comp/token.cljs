@@ -1,7 +1,7 @@
 
 (ns cirru-editor.comp.token
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [create-comp defcomp <> div input]]
+            [respo.core :refer [defcomp <> div input]]
             [cirru-editor.util.measure :refer [text-width]]
             [cirru-editor.util.detect :refer [has-blank?]]
             [cirru-editor.util.keycode :as keycode]))
