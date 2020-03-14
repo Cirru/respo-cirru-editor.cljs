@@ -6,6 +6,8 @@ Reimplement Cirru Editor in Respo.
 
 Demo http://repo.cirru.org/respo-cirru-editor/
 
+Support several basic shortcuts from [Clacit Editor](https://github.com/Cirru/calcit-editor/wiki/Keyboard-Shortcuts).
+
 ### Usage
 
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
