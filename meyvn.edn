@@ -1,9 +1,0 @@
-
-{:pom {:group-id "cirru",
-       :artifact-id "editor",
-       :version "0.2.7",
-       :name "Respo Cirru Editor"}
- :packaging {:jar {:enabled true
-                   :remote-repository {:id "clojars"
-                                       :url "https://clojars.org/repo"}}}
- :scm {:enabled true}}

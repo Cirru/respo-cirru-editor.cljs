@@ -4,12 +4,13 @@
   "description": "Stack Workflow",
   "main": "index.js",
   "scripts": {
+    "deploy": "clj -A:release",
+    "m2": "clj -A:release install",
     "watch": "shadow-cljs watch client",
     "serve": "http-server dist -s",
     "build-cdn": "shadow-cljs clj-run build.main/build-cdn",
     "build": "shadow-cljs clj-run build.main/build",
-    "upload": "node target/upload.js",
-    "up": "yarn build-cdn && yarn upload",
+    "up": "yarn build-cdn && tiye-up",
     "page": "shadow-cljs clj-run build.main/page",
     "ln": "cd target && rm -f entry && ln -s ../entry"
   },
@@ -20,8 +21,7 @@
   "author": "jiyinyiyong",
   "license": "MIT",
   "devDependencies": {
-    "http-server": "^0.12.0",
-    "shadow-cljs": "^2.8.83"
+    "shadow-cljs": "^2.8.93"
   },
   "dependencies": {
     "shortid": "^2.2.15"
