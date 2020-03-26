@@ -1,0 +1,6 @@
+{:version "0.3.0-a1"
+ :group-id "cirru"
+ :artifact-id "editor"
+ :skip-tag true
+ :description "Respo Cirru Editor"
+ :scm-url "https://github.com/Cirru/respo-cirru-editor"}

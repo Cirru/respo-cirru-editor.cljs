@@ -4,15 +4,11 @@
   :dependencies [
     [mvc-works/hsl "0.1.2"]
     [mvc-works/shell-page "0.1.10"]
-    [respo "0.11.5"]
-    [respo/ui "0.3.13"]
+    [respo "0.12.1"]
+    [respo/ui "0.3.14"]
     [cumulo/util "0.1.10"]
     [org.clojure/core.incubator "0.1.4"]
   ]
-  :repositories {
-    "central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
-    "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}
-  }
   :open-file-command [
     "subl"
     ["%s:%s:%s" :file :line :column]

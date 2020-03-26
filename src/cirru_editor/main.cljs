@@ -1,7 +1,7 @@
 
 (ns cirru-editor.main
   (:require [respo.core :refer [render! clear-cache! realize-ssr!]]
-            [respo.cursor :refer [mutate]]
+            [respo.cursor :refer [update-states]]
             [cirru-editor.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]
             [cirru-editor.util.dom :refer [focus!]]
@@ -16,7 +16,7 @@
   (comment println "dispatch:" op op-data)
   (case op
     :save (reset! *store op-data)
-    :states (swap! *store update :states (mutate op-data)))
+    :states (reset! *store (update-states @*store op-data)))
   (reset! *touched true))
 
 (def mount-target (.querySelector js/document ".app"))

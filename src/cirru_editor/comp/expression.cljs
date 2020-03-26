@@ -1,7 +1,7 @@
 
 (ns cirru-editor.comp.expression
   (:require [hsl.core :refer [hsl]]
-            [respo.core :refer [defcomp list-> cursor-> <> div span]]
+            [respo.core :refer [defcomp list-> >> <> div span]]
             [respo.comp.space :refer [=<]]
             [respo.comp.inspect :refer [comp-inspect]]
             [cirru-editor.comp.token :refer [comp-token]]
@@ -129,10 +129,8 @@
                            child-focus
                            on-command
                            child-head?)
-                          (cursor->
-                           idx
-                           comp-expression
-                           states
+                          (comp-expression
+                           (>> states idx)
                            item
                            modify!
                            child-coord

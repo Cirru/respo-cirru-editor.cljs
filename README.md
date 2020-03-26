@@ -13,7 +13,7 @@ Support several basic shortcuts from [Clacit Editor](https://github.com/Cirru/ca
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
 
 ```clojure
-[cirru/editor "0.2.7"]
+[cirru/editor "0.3.0-a1"]
 ```
 
 Import `comp-editor` like this:
@@ -48,7 +48,7 @@ Take `src/cirru_editor/main.cljs` for example.
 
 ### Develop
 
-https://github.com/mvc-works/stack-workflow
+https://github.com/mvc-works/calcit-workflow
 
 ### License
 
