@@ -4,7 +4,8 @@
             [respo.core :refer [defcomp <> div input]]
             [cirru-editor.util.measure :refer [text-width]]
             [cirru-editor.util.detect :refer [has-blank?]]
-            [cirru-editor.util.keycode :as keycode]))
+            [cirru-editor.util.keycode :as keycode]
+            [clojure.string :as string]))
 
 (defn on-click [modify! coord focus]
   (fn [e dispatch!] (if (not= coord focus) (modify! :focus-to coord dispatch!))))
@@ -78,10 +79,10 @@
              (contains? #{"\"" "|"} (subs token 0 1)) {:color "rgb(75, 210, 75)"}
              (contains? #{":"} (subs token 0 1)) {:color "rgb(136, 136, 191)"}
              (re-matches #"-?[\d\.]+" token) {:color "rgb(173, 31, 31)"}
-             (or (has-blank? token) (zero? (count token)))
-               {:background-color (hsl 0 0 100 0.16)}
              head? {:color (hsl 40 80 60 0.9)}
-             :else nil)),
+             :else nil)
+           (if (or (has-blank? token) (zero? (count token)))
+             {:background-color (hsl 0 0 100 0.16)})),
    :on {:input (on-input modify! coord),
         :keydown (on-keydown modify! coord token on-command),
         :click (on-click modify! coord focus)}}))
