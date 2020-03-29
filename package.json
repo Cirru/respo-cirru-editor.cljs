@@ -21,7 +21,7 @@
   "author": "jiyinyiyong",
   "license": "MIT",
   "devDependencies": {
-    "shadow-cljs": "^2.8.93"
+    "shadow-cljs": "^2.8.94"
   },
   "dependencies": {
     "shortid": "^2.2.15"
