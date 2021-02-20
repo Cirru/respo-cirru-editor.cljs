@@ -90,7 +90,7 @@
 
 (defcomp
  comp-expression
- (states expression modify! coord level tail? focus on-command head? after-expression?)
+ (states expression modify! coord level tail? focus on-command head? inline?)
  (let [exp-size (count expression), state (or (:data states) false)]
    (if state
      (div
@@ -103,20 +103,25 @@
        :class-name (if (= coord focus) "editor-focused cirru-expression" "cirru-expression"),
        :style (merge
                {}
-               (if (and (shallow? expression)
-                        (not after-expression?)
-                        (not tail?)
-                        (pos? level)
-                        (< (count expression) 5))
-                 style-inline)
+               (if inline? style-inline)
                (if (and tail? (not head?) (pos? level)) style-tail)
                (if (= coord focus) {:border-color (hsl 0 0 100 0.6)})),
        :on {:click (on-click modify! coord focus),
             :keydown (on-keydown state modify! coord on-command)}}
-      (loop [acc [], idx 0, expr expression, child-after-expression? false]
+      (loop [acc [], idx 0, expr expression, prev-kind nil]
         (if (empty? expr)
           acc
           (let [item (first expr)
+                kind (if (string? item)
+                       :leaf
+                       (if (and (<= (count item) 1) (string? (first item)))
+                         :leaf
+                         (case prev-kind
+                           :expr :expr
+                           :inline-expr (if (> (count item) 2) :expr :inline-expr)
+                           :leaf (if (> (count item) 6) :expr :inline-expr)
+                           nil (if (> (count item) 6) :expr :inline-expr)
+                           :expr)))
                 pair [idx
                       (let [child-coord (conj coord idx)
                             child-focus (if (coord-contains? focus child-coord) focus nil)
@@ -135,13 +140,14 @@
                            modify!
                            child-coord
                            (inc level)
-                           (and (or after-expression? (not tail?)) (= (dec exp-size) idx))
+                           (and (not tail?) (= (dec exp-size) idx) (= prev-kind :leaf))
                            child-focus
                            on-command
                            child-head?
-                           child-after-expression?)))]
+                           (or (= kind :inline-expr) (= kind :leaf)))))]
                 next-acc (conj acc pair)]
-            (recur next-acc (inc idx) (rest expr) (vector? item)))))))))
+            (comment println "kinds:" prev-kind kind " at " item)
+            (recur next-acc (inc idx) (rest expr) kind))))))))
 
 (def style-expression
   {:border-style "solid",
