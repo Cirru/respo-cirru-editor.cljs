@@ -13,7 +13,7 @@ Support several basic shortcuts from [Clacit Editor](https://github.com/Cirru/ca
 [![Clojars Project](https://img.shields.io/clojars/v/cirru/editor.svg)](https://clojars.org/cirru/editor)
 
 ```clojure
-[cirru/editor "0.3.0-a2"]
+[cirru/editor "0.3.1"]
 ```
 
 Import `comp-editor` like this:
